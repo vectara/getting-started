@@ -1,0 +1,10 @@
+##### Composer
+composer.phar
+/vendor/
+
+composer.lock
+
+/Ai/
+/GPBMetadata/
+
+grpc_php_plugin

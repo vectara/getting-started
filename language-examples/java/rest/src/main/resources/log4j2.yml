@@ -1,0 +1,22 @@
+# Configuration file for log4j2
+
+Configuration:
+  status: warn
+
+  appenders:
+    Console:
+      name: LogToConsole
+      PatternLayout:
+        Pattern: "%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %-30c{1} - %msg%n"
+
+  Loggers:
+    logger:
+      - name: vectara
+        level: DEBUG
+        additivity: false
+        AppenderRef:
+          - ref: LogToConsole
+    Root:
+      - level: ERROR
+        AppenderRef:
+          - ref: LogToConsole

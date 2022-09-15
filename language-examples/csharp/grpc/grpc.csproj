@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.6.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.3" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.47.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="../../../public/proto/status.proto" GrpcServices="Client" />
+    <Protobuf Include="../../../public/proto/currency.proto" GrpcServices="Client" />
+    <Protobuf Include="../../../public/proto/custom-dim.proto" GrpcServices="Client" />
+    <Protobuf Include="../../../public/proto/indexing-core.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
+    <Protobuf Include="../../../public/proto/indexing.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
+    <Protobuf Include="../../../public/proto/serving.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
+    <Protobuf Include="../../../public/proto/common.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
+    <Protobuf Include="../../../public/proto/admin.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" />
+    <Protobuf Include="../../../public/proto/core-services.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" />
+    <Protobuf Include="../../../public/proto/services.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" /> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
+
+</Project>
