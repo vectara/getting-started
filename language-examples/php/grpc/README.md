@@ -44,7 +44,7 @@ To run the example, do the following:
 
     `sh generate_proto_stubs.sh`
    
-   This will generate two folders containing Vectara proto php stubs: `Ai/` and `GPBMetadata/`
+   This will generate two folders containing Vectara proto php stubs: `Com/Vectara/` and `GPBMetadata/`
 
 4. Install php dependencies using the composer script. This will make sure that all required dependencies are downloaded:
 

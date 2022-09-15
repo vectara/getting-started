@@ -4,7 +4,7 @@ composer.phar
 
 composer.lock
 
-/Ai/
+/Com/
 /GPBMetadata/
 
 grpc_php_plugin

@@ -1,5 +1,5 @@
-using Ai.Zir;
-using Ai.Zir.Serving;
+using Com.Vectara;
+using Com.Vectara.Serving;
 using CommandLine;
 using Grpc.Core;
 using Grpc.Net.Client;
