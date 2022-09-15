@@ -1,0 +1,70 @@
+html {
+    line-height: 1.15;
+    /* 1 */
+    -webkit-text-size-adjust: 100%;
+    /* 2 */
+}
+
+body {
+    font-family:
+        system-ui,
+        -apple-system,
+        /* Firefox supports this but not yet `system-ui` */
+        'Segoe UI',
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif,
+        'Apple Color Emoji',
+        'Segoe UI Emoji';
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: inherit;
+    /* 1 */
+    font-size: 100%;
+    /* 1 */
+    line-height: 1.15;
+    /* 1 */
+    margin: 0;
+    /* 2 */
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-justify-between {
+    justify-content: space-between;
+}
+
+.small-width {
+    max-width: 400px;
+}
+
+.border-red {
+    border: 1px solid red;
+}
+
+.button-div {
+    margin: 50px 0px 20px 10px;
+    max-width: 600px;
+}
+
+.left-margin {
+    margin-left: 10px;
+}
+
+.small-margin {
+    margin: 3px 0px 3px 0px;
+}
