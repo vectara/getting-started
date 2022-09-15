@@ -27,7 +27,7 @@ if (empty($jwt_token)) {
     return;
 }
 
-$client = new Ai\Zir\IndexServiceClient($_POST['indexing_endpoint'] . ':443', [
+$client = new Com\Vectara\IndexServiceClient($_POST['indexing_endpoint'] . ':443', [
     'credentials' => \Grpc\ChannelCredentials::createSsl(),
     'update_metadata' => function ($metaData) use (
         $jwt_token,
@@ -41,9 +41,9 @@ $client = new Ai\Zir\IndexServiceClient($_POST['indexing_endpoint'] . ':443', [
     },
 ]);
 
-$indexRequest = new Ai\Zir\IndexDocumentRequest();
+$indexRequest = new Com\Vectara\IndexDocumentRequest();
 
-$section = new Ai\Zir\Indexing\Section();
+$section = new Com\Vectara\Indexing\Section();
 $section->setId(1);
 $section->setTitle('Section Title.');
 $section->setText('Dummy Text');
@@ -54,7 +54,7 @@ $UUID = vsprintf(
     str_split(bin2hex(random_bytes(16)), 4)
 );
 
-$document = new Ai\Zir\Indexing\Document();
+$document = new Com\Vectara\Indexing\Document();
 $document->setDocumentId($UUID);
 $document->setTitle('Test Title.');
 $docMetadata = json_encode([

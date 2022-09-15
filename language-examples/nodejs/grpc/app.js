@@ -16,16 +16,13 @@ const axios = require('axios');
 const path = require('path');
 
 let PROTO_PATHS = [
-    path.join(__dirname, "../../../../public/proto/admin.proto"),
-    path.join(__dirname, "../../../../public/proto/common.proto"),
-    path.join(__dirname, "../../../../public/proto/core-services.proto"),
-    path.join(__dirname, "../../../../public/proto/currency.proto"),
-    path.join(__dirname, "../../../../public/proto/custom-dim.proto"),
-    path.join(__dirname, "../../../../public/proto/indexing-core.proto"),
-    path.join(__dirname, "../../../../public/proto/indexing.proto"),
-    path.join(__dirname, "../../../../public/proto/services.proto"),
-    path.join(__dirname, "../../../../public/proto/serving.proto"),
-    path.join(__dirname, "../../../../public/proto/status.proto")
+    path.join(__dirname, "../../../protos/admin.proto"),
+    path.join(__dirname, "../../../protos/common.proto"),
+    path.join(__dirname, "../../../protos/custom-dim.proto"),
+    path.join(__dirname, "../../../protos/indexing.proto"),
+    path.join(__dirname, "../../../protos/services.proto"),
+    path.join(__dirname, "../../../protos/serving.proto"),
+    path.join(__dirname, "../../../protos/status.proto")
 ]
 
 let packageDefinition = protoLoader.loadSync(
@@ -37,7 +34,7 @@ let packageDefinition = protoLoader.loadSync(
         defaults: true,
         oneofs: true
     });
-let zir = grpc.loadPackageDefinition(packageDefinition).com.vectara;
+let vectara = grpc.loadPackageDefinition(packageDefinition).com.vectara;
 
 const app = express();
 app.use(express.json());
@@ -52,7 +49,7 @@ app.post('/queryData', (req, res) => {
         .then((token) => {
             const query_data = generateQueryData("test", customer_id, corpus_id);
             try {
-                let queryService = new zir.QueryService(
+                let queryService = new vectara.QueryService(
                     `${serving_endpoint}:443`,
                     getCredentials(token, customer_id, corpus_id));
 
@@ -78,7 +75,7 @@ app.post('/queryDataWithApiKey', (req, res) => {
     const { serving_endpoint, customer_id, corpus_id, api_key } = req.body;
     const query_data = generateQueryData("test", customer_id, corpus_id);
     try {
-        let queryService = new zir.QueryService(
+        let queryService = new vectara.QueryService(
             `${serving_endpoint}:443`,
             getCredentials(api_key, customer_id, corpus_id, true));
 
@@ -103,7 +100,7 @@ app.post('/createCorpus', (req, res) => {
             };
 
             try {
-                let adminService = new zir.AdminService(
+                let adminService = new vectara.AdminService(
                     `${admin_endpoint}:443`,
                     getCredentials(token, customer_id, null));
 
@@ -130,7 +127,7 @@ app.post('/indexData', (req, res) => {
     getJwtToken(auth_url, client_id, client_secret)
         .then((token) => {
             try {
-                let indexingService = new zir.IndexService(
+                let indexingService = new vectara.IndexService(
                     `${indexing_endpoint}:443`,
                     getCredentials(token, customer_id, corpus_id));
 

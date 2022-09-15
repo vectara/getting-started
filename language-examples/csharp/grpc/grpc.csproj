@@ -19,16 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../../public/proto/status.proto" GrpcServices="Client" />
-    <Protobuf Include="../../../public/proto/currency.proto" GrpcServices="Client" />
-    <Protobuf Include="../../../public/proto/custom-dim.proto" GrpcServices="Client" />
-    <Protobuf Include="../../../public/proto/indexing-core.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
-    <Protobuf Include="../../../public/proto/indexing.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
-    <Protobuf Include="../../../public/proto/serving.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
-    <Protobuf Include="../../../public/proto/common.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/" />
-    <Protobuf Include="../../../public/proto/admin.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" />
-    <Protobuf Include="../../../public/proto/core-services.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" />
-    <Protobuf Include="../../../public/proto/services.proto" GrpcServices="Client" AdditionalImportDirs="../../../public/proto/;/tmp/protos/" /> 
+    <Protobuf Include="../../../protos/admin.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/;/tmp/protos/" />
+    <Protobuf Include="../../../protos/common.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />
+    <Protobuf Include="../../../protos/custom-dim.proto" GrpcServices="Client" />
+    <Protobuf Include="../../../protos/indexing.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />
+    <Protobuf Include="../../../protos/services.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/;/tmp/protos/" /> 
+    <Protobuf Include="../../../protos/serving.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />
+    <Protobuf Include="../../../protos/status.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>

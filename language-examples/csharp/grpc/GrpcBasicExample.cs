@@ -1,7 +1,7 @@
-﻿using Ai.Zir;
-using Ai.Zir.Admin;
-using Ai.Zir.Indexing;
-using Ai.Zir.Serving;
+﻿using Com.Vectara;
+using Com.Vectara.Admin;
+using Com.Vectara.Indexing;
+using Com.Vectara.Serving;
 using CommandLine;
 using Grpc.Core;
 using Grpc.Net.Client;

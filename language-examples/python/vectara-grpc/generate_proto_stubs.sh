@@ -13,14 +13,11 @@ curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/h
 curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto\
     > ${EXTERNAL}/annotations.proto
 
-python3 -m grpc_tools.protoc -I=../../../public/proto/ -I=${EXROOT} --python_out=. --grpc_python_out=. \
-    ../../../public/proto/admin.proto \
-    ../../../public/proto/services.proto \
-    ../../../public/proto/common.proto \
-    ../../../public/proto/currency.proto \
-    ../../../public/proto/indexing.proto \
-    ../../../public/proto/status.proto \
-    ../../../public/proto/core-services.proto \
-    ../../../public/proto/custom-dim.proto \
-    ../../../public/proto/serving.proto \
-    ../../../public/proto/indexing-core.proto
+python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --grpc_python_out=. \
+    ../../../protos/admin.proto \
+    ../../../protos/common.proto \
+    ../../../protos/custom-dim.proto \
+    ../../../protos/indexing.proto \
+    ../../../protos/services.proto \
+    ../../../protos/serving.proto \
+    ../../../protos/status.proto

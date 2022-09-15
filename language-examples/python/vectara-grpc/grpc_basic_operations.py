@@ -35,11 +35,11 @@ INDEXING_DATA = [
     },
 ]
 
-def _get_jwt_token(auth_url: str, appclient_id: str, appclient_secret: str):
+def _get_jwt_token(auth_url: str, app_client_id: str, app_client_secret: str):
     """Connect to the server and get a JWT token."""
     token_endpoint = f"{auth_url}/oauth2/token"
     session = OAuth2Session(
-        appclient_id, appclient_secret, scope="")
+        app_client_id, app_client_secret, scope="")
     token = session.fetch_token(token_endpoint, grant_type="client_credentials")
     return token["access_token"]
 
@@ -195,15 +195,15 @@ if __name__ == "__main__":
     parser.add_argument("--serving-endpoint", help="The endpoint of querying server.",
                         default="serving.vectara.io")
 
-    parser.add_argument("--appclient-id", help="This appclient should have enough rights.")
-    parser.add_argument("--appclient-secret")
+    parser.add_argument("--app-client-id", help="This app client should have enough rights.")
+    parser.add_argument("--app-client-secret")
     parser.add_argument("--auth-url", help="The authentication URL for this customer.")
     parser.add_argument("--query", help="Query to run against the corpus.", default="Test query")
 
     args = parser.parse_args()
 
     if args:
-        token = _get_jwt_token(args.auth_url, args.appclient_id, args.appclient_secret)
+        token = _get_jwt_token(args.auth_url, args.app_client_id, args.app_client_secret)
 
         if token:
             error, status = index(args.customer_id,

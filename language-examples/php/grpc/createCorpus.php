@@ -25,7 +25,7 @@ if (empty($jwt_token)) {
     return;
 }
 
-$client = new Ai\Zir\AdminServiceClient($_POST['admin_endpoint'] . ':443', [
+$client = new Com\Vectara\AdminServiceClient($_POST['admin_endpoint'] . ':443', [
     'credentials' => \Grpc\ChannelCredentials::createSsl(),
     'update_metadata' => function ($metaData) use ($jwt_token, $customer_id) {
         $metaData['Authorization'] = ['Bearer ' . $jwt_token];
@@ -34,8 +34,8 @@ $client = new Ai\Zir\AdminServiceClient($_POST['admin_endpoint'] . ':443', [
     },
 ]);
 
-$createCorpusRequest = new Ai\Zir\Admin\CreateCorpusRequest();
-$corpus = new Ai\Zir\Admin\Corpus();
+$createCorpusRequest = new Com\Vectara\Admin\CreateCorpusRequest();
+$corpus = new Com\Vectara\Admin\Corpus();
 $corpus->setName('Test From PHP gRPC');
 $corpus->setDescription('Test Description');
 $createCorpusRequest->setCorpus($corpus);

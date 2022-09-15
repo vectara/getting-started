@@ -18,7 +18,7 @@ $corpus_id = $_POST['corpus_id'];
 $query = $_POST['query'];
 $api_key = $_POST['api_key'];
 
-$client = new Ai\Zir\QueryServiceClient($_POST['serving_endpoint'] . ':443', [
+$client = new Com\Vectara\QueryServiceClient($_POST['serving_endpoint'] . ':443', [
     'credentials' => \Grpc\ChannelCredentials::createSsl(),
     'update_metadata' => function ($metaData) use (
         $customer_id,
@@ -32,12 +32,12 @@ $client = new Ai\Zir\QueryServiceClient($_POST['serving_endpoint'] . ':443', [
     },
 ]);
 
-$batchQueryRequest = new Ai\Zir\Serving\BatchQueryRequest();
+$batchQueryRequest = new Com\Vectara\Serving\BatchQueryRequest();
 
-$corpusKey = new Ai\Zir\Serving\CorpusKey();
+$corpusKey = new Com\Vectara\Serving\CorpusKey();
 $corpusKey->setCorpusId($corpus_id);
 
-$queryRequest = new Ai\Zir\Serving\QueryRequest();
+$queryRequest = new Com\Vectara\Serving\QueryRequest();
 $queryRequest->setQuery($query);
 $queryRequest->setNumResults(10);       
 $queryRequest->setCorpusKey([$corpusKey]);
