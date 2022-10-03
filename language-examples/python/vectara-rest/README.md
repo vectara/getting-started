@@ -64,3 +64,5 @@ The examples in this directory exercise the following functionality:
 1. Creating a corpus using OAuth.
 2. Indexing data into a corpus using OAuth.
 3. Querying a corpus using both OAuth and API Keys.
+4. Deleting a corpus using OAuth.
+5. Resetting a corpus using OAuth.

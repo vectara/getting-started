@@ -1,6 +1,6 @@
 <?php
 /**
- * Indexes a document to a specified corpus in Vectara platform using HTTP/REST.
+ * Indexes a file to a specified corpus in Vectara platform using HTTP/REST.
  *
  * @auth_url            Authentication URL for this customer.
  * @client_id           App client ID.
