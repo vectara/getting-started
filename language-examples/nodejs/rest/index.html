@@ -44,7 +44,7 @@
                 <input style="min-width: 220px;" type="password" id="client_secret" />
             </div>
             <div class="flexRowJustify formField">
-                <label for="admin_endpoint">Serving Endpoint: </label>
+                <label for="admin_endpoint">Admin Endpoint: </label>
                 <input style="min-width: 220px;" type="text" value="admin.vectara.io" id="admin_endpoint" />
             </div>
             <div class="flexRowJustify formField">
@@ -52,7 +52,7 @@
                 <input style="min-width: 220px;" type="text" value="serving.vectara.io" id="serving_endpoint" />
             </div>
             <div class="flexRowJustify formField">
-                <label for="indexing_endpoint">Serving Endpoint: </label>
+                <label for="indexing_endpoint">Indexing Endpoint: </label>
                 <input style="min-width: 220px;" type="text" value="indexing.vectara.io" id="indexing_endpoint" />
             </div>
             <div class="flexRowJustify formField">
@@ -62,7 +62,10 @@
         </div>
         <div class="flexRowJustify" style="max-width: 500px; margin-top: 30px;">
             <button id="create_corpus">Create Corpus</button>
-            <button id="index_data">Index Data</button>
+            <button id="delete_corpus">Delete Corpus</button>
+            <button id="reset_corpus">Reset Corpus</button>
+            <button id="index_document">Index Document</button>
+            <button id="upload_file">Upload File</button>
             <button id="query_data">Query Data (OAuth)</button>
             <button id="query_data_api_key">Query Data (API Key)</button>
         </div>
@@ -91,6 +94,66 @@
                     auth_url,
                     client_id,
                     client_secret
+                })
+            })
+                .then((response) => { return response.json(); })
+                .then((data) => {
+                    console.log(data);
+                    document.getElementById("status").innerHTML = JSON.stringify(data);
+                });
+        });
+
+        let reset_corpus_btn = document.getElementById("reset_corpus");
+        reset_corpus_btn.addEventListener("click", function () {
+            let auth_url = document.getElementById("auth_url").value;
+            let client_id = document.getElementById("client_id").value;
+            let client_secret = document.getElementById("client_secret").value;
+            let admin_endpoint = document.getElementById("admin_endpoint").value;
+            let customer_id = document.getElementById("customer_id").value;
+            let corpus_id = document.getElementById("corpus_id").value;
+
+            fetch("/resetCorpus", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    admin_endpoint,
+                    customer_id,
+                    auth_url,
+                    client_id,
+                    client_secret,
+                    corpus_id
+                })
+            })
+                .then((response) => { return response.json(); })
+                .then((data) => {
+                    console.log(data);
+                    document.getElementById("status").innerHTML = JSON.stringify(data);
+                });
+        });
+
+        let delete_corpus_btn = document.getElementById("delete_corpus");
+        delete_corpus_btn.addEventListener("click", function () {
+            let auth_url = document.getElementById("auth_url").value;
+            let client_id = document.getElementById("client_id").value;
+            let client_secret = document.getElementById("client_secret").value;
+            let admin_endpoint = document.getElementById("admin_endpoint").value;
+            let customer_id = document.getElementById("customer_id").value;
+            let corpus_id = document.getElementById("corpus_id").value;
+
+            fetch("/deleteCorpus", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    admin_endpoint,
+                    customer_id,
+                    auth_url,
+                    client_id,
+                    client_secret,
+                    corpus_id
                 })
             })
                 .then((response) => { return response.json(); })
@@ -130,8 +193,8 @@
                 });
         })
 
-        let index_data_btn = document.getElementById("index_data");
-        index_data_btn.addEventListener("click", function () {
+        let upload_file_btn = document.getElementById("upload_file");
+        upload_file_btn.addEventListener("click", function () {
             let auth_url = document.getElementById("auth_url").value;
             let client_id = document.getElementById("client_id").value;
             let client_secret = document.getElementById("client_secret").value;
@@ -139,7 +202,36 @@
             let customer_id = document.getElementById("customer_id").value;
             let corpus_id = document.getElementById("corpus_id").value;
 
-            fetch("/indexData", {
+            fetch("/uploadFile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    indexing_endpoint,
+                    customer_id,
+                    corpus_id,
+                    auth_url,
+                    client_id,
+                    client_secret
+                })
+            })
+                .then((response) => { return response.json(); })
+                .then((data) => {
+                    document.getElementById("status").innerHTML = JSON.stringify(data);
+                });
+        })
+
+        let index_document_btn = document.getElementById("index_document");
+        index_document_btn.addEventListener("click", function () {
+            let auth_url = document.getElementById("auth_url").value;
+            let client_id = document.getElementById("client_id").value;
+            let client_secret = document.getElementById("client_secret").value;
+            let indexing_endpoint = document.getElementById("indexing_endpoint").value;
+            let customer_id = document.getElementById("customer_id").value;
+            let corpus_id = document.getElementById("corpus_id").value;
+
+            fetch("/indexDocument", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
