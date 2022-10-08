@@ -50,6 +50,6 @@ All of this is demonstrated in the code. For further clarification, please see t
 The API Key authentication method is supported with Serving/Querying only. 
 
 Use the following link to generate an API Key via Vectara platform. 
-[Api Keys](https://docs.zir-ai.com/docs/api-keys)
+[Api Keys](https://docs.vectara.com/docs/api-keys)
 
 > While generating an API Key, make sure that you have assigned the correct corpus to it.
