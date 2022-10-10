@@ -1,0 +1,18 @@
+name: 🐞 Getting Started Example Bug
+description: A getting started example is incorrect.
+labels: ["bug"]
+body:
+- type: input
+  attributes:
+    label: File
+    description: What file(s) are incorrect.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Description
+    description: Description of the problem(s)
+  validations:
+    required: true
+    
+
