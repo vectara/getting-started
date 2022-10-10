@@ -16,7 +16,7 @@ curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/a
 python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --grpc_python_out=. \
     ../../../protos/admin.proto \
     ../../../protos/common.proto \
-    ../../../protos/custom-dim.proto \
+    ../../../protos/custom_dim.proto \
     ../../../protos/indexing.proto \
     ../../../protos/services.proto \
     ../../../protos/serving.proto \

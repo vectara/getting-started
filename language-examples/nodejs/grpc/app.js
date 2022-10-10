@@ -18,7 +18,7 @@ const path = require('path');
 let PROTO_PATHS = [
     path.join(__dirname, "../../../protos/admin.proto"),
     path.join(__dirname, "../../../protos/common.proto"),
-    path.join(__dirname, "../../../protos/custom-dim.proto"),
+    path.join(__dirname, "../../../protos/custom_dim.proto"),
     path.join(__dirname, "../../../protos/indexing.proto"),
     path.join(__dirname, "../../../protos/services.proto"),
     path.join(__dirname, "../../../protos/serving.proto"),
