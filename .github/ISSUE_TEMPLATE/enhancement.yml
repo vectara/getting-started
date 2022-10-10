@@ -1,0 +1,23 @@
+name: 💡 Enhancement
+description: Request a new feature
+labels: ["enhancement"]
+body:
+- type: textarea
+  attributes:
+    label: Requested Feature
+    description: Describe what feature/enhancement you would like to see
+    placeholder: |
+      When I do <X>, I would like <Y> to happen because <Z>
+      ```...```
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      - Use case
+      - What programming language(s) are you using
+      - Would you be willing to try implementing the feature?
+  validations:
+    required: false
+
