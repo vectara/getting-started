@@ -21,7 +21,7 @@
   <ItemGroup>
     <Protobuf Include="../../../protos/admin.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/;/tmp/protos/" />
     <Protobuf Include="../../../protos/common.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />
-    <Protobuf Include="../../../protos/custom-dim.proto" GrpcServices="Client" />
+    <Protobuf Include="../../../protos/custom_dim.proto" GrpcServices="Client" />
     <Protobuf Include="../../../protos/indexing.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />
     <Protobuf Include="../../../protos/services.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/;/tmp/protos/" /> 
     <Protobuf Include="../../../protos/serving.proto" GrpcServices="Client" AdditionalImportDirs="../../../protos/" />

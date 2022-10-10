@@ -10,7 +10,7 @@
 protoc --proto_path=../../../protos/ --php_out=. --grpc_out=. --plugin=protoc-gen-grpc=grpc_php_plugin \
     ../../../protos/admin.proto \
     ../../../protos/common.proto \
-    ../../../protos/custom-dim.proto \
+    ../../../protos/custom_dim.proto \
     ../../../protos/indexing.proto \
     ../../../protos/services.proto \
     ../../../protos/serving.proto \
