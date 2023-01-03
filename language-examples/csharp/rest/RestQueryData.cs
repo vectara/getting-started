@@ -18,7 +18,7 @@ class RestQueryData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{servingEndpoint}/v1/query"),
+                    RequestUri = new Uri($"https://{servingEndpoint}/v1/query"),
                     Method = HttpMethod.Post,
                 };
                 Dictionary<String, Object> queryData = new();

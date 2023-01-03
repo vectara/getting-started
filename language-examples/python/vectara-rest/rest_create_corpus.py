@@ -17,7 +17,7 @@ def create_corpus(customer_id: int, admin_address: str, jwt_token: str):
     """Create a corpus.
     Args:
         customer_id: Unique customer ID in vectara platform.
-        admin_address: Address of the admin server. e.g., admin.vectara.io
+        admin_address: Address of the admin server. e.g., api.vectara.io
         jwt_token: A valid Auth token.
 
     Returns:
@@ -29,7 +29,7 @@ def create_corpus(customer_id: int, admin_address: str, jwt_token: str):
         "Authorization": f"Bearer {jwt_token}"
     }
     response = requests.post(
-        f"https://h.{admin_address}/v1/create-corpus",
+        f"https://{admin_address}/v1/create-corpus",
         data=_get_create_corpus_json(),
         verify=True,
         headers=post_headers)

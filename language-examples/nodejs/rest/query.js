@@ -33,7 +33,7 @@ module.exports = {
                 'customer-id': customer_id.toString()
             }
         };
-        const result = await axios.post(`https://h.${serving_endpoint}/v1/query`, data, config);
+        const result = await axios.post(`https://${serving_endpoint}/v1/query`, data, config);
         return result;
     },
 
@@ -46,7 +46,7 @@ module.exports = {
                 'customer-id': customer_id.toString()
             }
         };
-        const result = await axios.post(`https://h.${serving_endpoint}/v1/query`, data, config);
+        const result = await axios.post(`https://${serving_endpoint}/v1/query`, data, config);
         return result;
     }
 };

@@ -27,7 +27,7 @@ def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, 
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
-        query_address: Address of the querying server. e.g., serving.vectara.io
+        query_address: Address of the querying server. e.g., api.vectara.io
         jwt_token: A valid Auth token.
 
     Returns:
@@ -40,7 +40,7 @@ def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, 
     }
 
     response = requests.post(
-        f"https://h.{query_address}/v1/query",
+        f"https://{query_address}/v1/query",
         data=_get_query_json(customer_id, corpus_id, query),
         verify=True,
         headers=post_headers)

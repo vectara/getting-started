@@ -47,7 +47,7 @@ public class RestQuery {
 
       HttpRequest.Builder builder =
           HttpRequest.newBuilder()
-              .uri(URI.create(String.format("https://h.%s/v1/query", servingUrl)))
+              .uri(URI.create(String.format("https://%s/v1/query", servingUrl)))
               .headers(
                   "Content-Type", "application/json", "customer-id", String.valueOf(customerId))
               .POST(BodyPublishers.ofString(queryJson));

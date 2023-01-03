@@ -36,7 +36,7 @@ def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
-        idx_address: Address of the indexing server. e.g., indexing.vectara.io
+        idx_address: Address of the indexing server. e.g., api.vectara.io
         jwt_token: A valid Auth token.
 
     Returns:
@@ -49,7 +49,7 @@ def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token
         "customer-id": f"{customer_id}"
     }
     response = requests.post(
-        f"https://h.{idx_address}/v1/index",
+        f"https://{idx_address}/v1/index",
         data=_get_index_request_json(customer_id, corpus_id),
         verify=True,
         headers=post_headers)

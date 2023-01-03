@@ -31,7 +31,7 @@ def upload_file(customer_id: int, corpus_id: int, idx_address: str, jwt_token: s
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
-        idx_address: Address of the indexing server. e.g., indexing.vectara.io
+        idx_address: Address of the indexing server. e.g., api.vectara.io
         jwt_token: A valid Auth token.
 
     Returns:
@@ -43,7 +43,7 @@ def upload_file(customer_id: int, corpus_id: int, idx_address: str, jwt_token: s
         "Authorization": f"Bearer {jwt_token}"
     }
     response = requests.post(
-        f"https://h.{idx_address}/upload?c={customer_id}&o={corpus_id}",
+        f"https://{idx_address}/v1/upload?c={customer_id}&o={corpus_id}",
         files={"file": ("test.json", _get_upload_file_json(), "application/json")},
         verify=True,
         headers=post_headers)

@@ -30,7 +30,7 @@ public class RestCreateCorpus {
     try {
       HttpRequest.Builder builder =
           HttpRequest.newBuilder()
-              .uri(URI.create(String.format("https://h.%s/v1/create-corpus", adminUrl)))
+              .uri(URI.create(String.format("https://%s/v1/create-corpus", adminUrl)))
               .headers(
                   "Content-Type", "application/json", "customer-id", String.valueOf(customerId))
               .POST(BodyPublishers.ofString(corpusJson));

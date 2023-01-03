@@ -15,7 +15,7 @@
 
 include 'getJwtToken.php';
 
-$url = 'https://h.' . $_POST['serving_endpoint'] . '/v1/query';
+$url = 'https://' . $_POST['serving_endpoint'] . '/v1/query';
 $customer_id = $_POST['customer_id'];
 $corpus_id = $_POST['corpus_id'];
 $query = $_POST['query'];
