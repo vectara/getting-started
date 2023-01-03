@@ -37,7 +37,7 @@
              }
          };
  
-         const result = await axios.post(`https://h.${indexing_endpoint}/v1/index`, data, config);
+         const result = await axios.post(`https://${indexing_endpoint}/v1/index`, data, config);
          return result;
      }
  };

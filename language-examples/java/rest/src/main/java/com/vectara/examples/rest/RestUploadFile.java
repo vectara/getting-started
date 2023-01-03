@@ -39,7 +39,7 @@ public class RestUploadFile {
     try {
       HttpRequest.Builder builder =
           HttpRequest.newBuilder()
-              .uri(URI.create(String.format("https://h.%s/upload", indexingUrl)))
+              .uri(URI.create(String.format("https://%s/v1/upload", indexingUrl)))
               .header("Content-Type", "multipart/form-data;boundary=" + boundary)
               .POST(BodyPublisherHelper.ofMultipartData(data, boundary));
       builder.header("Authorization", "Bearer " + jwtToken);

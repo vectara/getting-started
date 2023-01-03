@@ -13,7 +13,7 @@
  */
 include 'getJwtToken.php';
 
-$url = 'https://h.' . $_POST['indexing_endpoint'] . '/v1/index';
+$url = 'https://' . $_POST['indexing_endpoint'] . '/v1/index';
 $customer_id = $_POST['customer_id'];
 
 $jwt_token = get_token(

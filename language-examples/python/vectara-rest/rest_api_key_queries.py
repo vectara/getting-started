@@ -29,7 +29,7 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
-        query_address: Address of the querying server. e.g., serving.vectara.io
+        query_address: Address of the querying server. e.g., api.vectara.io
         api_key: A valid API key with query access on the corpus.
 
     Returns:
@@ -42,7 +42,7 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
     }
 
     response = requests.post(
-        f"https://h.{query_address}/v1/query",
+        f"https://{query_address}/v1/query",
         data=_get_query_json(customer_id, corpus_id, query),
         verify=True,
         headers=post_headers)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                         help="Corpus ID to which data will be indexed and queried from.")
 
     parser.add_argument("--serving-endpoint", help="The endpoint of querying server.",
-                        default="serving.vectara.io")
+                        default="api.vectara.io")
     parser.add_argument("--api-key", help="API key retrieved from Vectara console.")
     parser.add_argument("--query", help="Query to run against the corpus.", default="Test query")
 

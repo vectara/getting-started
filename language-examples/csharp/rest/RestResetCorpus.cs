@@ -17,7 +17,7 @@ class RestResetCorpus
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{adminEndpoint}/v1/reset-corpus"),
+                    RequestUri = new Uri($"https://{adminEndpoint}/v1/reset-corpus"),
                     Method = HttpMethod.Post,
                 };
 

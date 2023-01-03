@@ -20,11 +20,11 @@ if __name__ == "__main__":
     parser.add_argument("--corpus-id", type=int, required=True,
                         help="Corpus ID to which data will be indexed and queried from.")
     parser.add_argument("--admin-endpoint", help="The endpoint of admin server.",
-                        default="admin.vectara.io")
+                        default="api.vectara.io")
     parser.add_argument("--indexing-endpoint", help="The endpoint of indexing server.",
-                        default="indexing.vectara.io")
+                        default="api.vectara.io")
     parser.add_argument("--serving-endpoint", help="The endpoint of querying server.",
-                        default="serving.vectara.io")
+                        default="api.vectara.io")
     parser.add_argument("--app-client-id",  required=True,
                         help="This app client should have enough rights.")
     parser.add_argument("--app-client-secret", required=True)

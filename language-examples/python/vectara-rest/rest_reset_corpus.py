@@ -18,7 +18,7 @@ def reset_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: Corpus ID in vectara platform.
-        admin_address: Address of the admin server. e.g., admin.vectara.io
+        admin_address: Address of the admin server. e.g., api.vectara.io
         jwt_token: A valid Auth token.
 
     Returns:
@@ -30,7 +30,7 @@ def reset_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token
         "Authorization": f"Bearer {jwt_token}"
     }
     response = requests.post(
-        f"https://h.{admin_address}/v1/reset-corpus",
+        f"https://{admin_address}/v1/reset-corpus",
         data=_get_reset_corpus_json(),
         verify=True,
         headers=post_headers)

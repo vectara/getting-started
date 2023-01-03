@@ -17,7 +17,7 @@ class RestDeleteCorpus
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{adminEndpoint}/v1/delete-corpus"),
+                    RequestUri = new Uri($"https://{adminEndpoint}/v1/delete-corpus"),
                     Method = HttpMethod.Post,
                 };
 

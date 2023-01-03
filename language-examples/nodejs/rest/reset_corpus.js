@@ -19,7 +19,7 @@
              }
          };
  
-         const result = await axios.post(`https://h.${admin_endpoint}/v1/reset-corpus`, data, config);
+         const result = await axios.post(`https://${admin_endpoint}/v1/reset-corpus`, data, config);
          return result;
      }
  };

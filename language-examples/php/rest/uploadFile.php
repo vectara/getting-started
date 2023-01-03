@@ -14,7 +14,7 @@
 
 include 'getJwtToken.php';
 
-$url = 'https://h.' . $_POST['indexing_endpoint'] . '/upload';
+$url = 'https://' . $_POST['indexing_endpoint'] . '/v1/upload';
 $customer_id = $_POST['customer_id'];
 $corpus_id = $_POST['corpus_id'];
 

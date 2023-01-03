@@ -17,7 +17,7 @@ class RestCreateCorpus
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{adminEndpoint}/v1/create-corpus"),
+                    RequestUri = new Uri($"https://{adminEndpoint}/v1/create-corpus"),
                     Method = HttpMethod.Post,
                 };
                 Dictionary<String, Object> corpusData = new();

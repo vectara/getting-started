@@ -52,7 +52,7 @@ class RestIndexData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{indexingEndpoint}/upload"),
+                    RequestUri = new Uri($"https://{indexingEndpoint}/v1/upload"),
                     Method = HttpMethod.Post,
                 };
                 // Getting a randomly generated key that will be used as boundary in 
@@ -101,7 +101,7 @@ class RestIndexData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://h.{indexingEndpoint}/v1/index"),
+                    RequestUri = new Uri($"https://{indexingEndpoint}/v1/index"),
                     Method = HttpMethod.Post,
                 };
 

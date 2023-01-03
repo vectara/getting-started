@@ -18,18 +18,18 @@ public class RestArgs {
 
   @Parameter(
       names = {"--admin-endpoint"},
-      description = "Admin endpoint such as admin.vectara.io")
-  String adminEndpoint = "admin.vectara.io";
+      description = "Admin endpoint such as api.vectara.io")
+  String adminEndpoint = "api.vectara.io";
 
   @Parameter(
       names = {"--serving-endpoint"},
-      description = "Serving endpoint such as serving.vectara.io")
-  String servingEndpoint = "serving.vectara.io";
+      description = "Serving endpoint such as api.vectara.io")
+  String servingEndpoint = "api.vectara.io";
 
   @Parameter(
       names = {"--indexing-endpoint"},
-      description = "Indexing endpoint such as indexing.vectara.io")
-  String indexingEndpoint = "indexing.vectara.io";
+      description = "Indexing endpoint such as api.vectara.io")
+  String indexingEndpoint = "api.vectara.io";
 
   // Following args are required to obtain JWT Token.
   @Parameter(

@@ -18,15 +18,15 @@ namespace VectaraExampleCommon
         [Option("admin-endpoint",
                 Required = false,
                 HelpText = "The endpoint of the admin server.")]
-        public String AdminEndpoint { get; set; } = "admin.vectara.io";
+        public String AdminEndpoint { get; set; } = "api.vectara.io";
         [Option("indexing-endpoint",
                 Required = false,
                 HelpText = "The endpoint of the indexing server.")]
-        public String IndexingEndpoint { get; set; } = "indexing.vectara.io";
+        public String IndexingEndpoint { get; set; } = "api.vectara.io";
         [Option("serving-endpoint",
                 Required = false,
                 HelpText = "The endpoint of the querying server.")]
-        public String ServingEndpoint { get; set; } = "serving.vectara.io";
+        public String ServingEndpoint { get; set; } = "api.vectara.io";
         [Option("app-client-id",
                 Required = false,
                 HelpText = "This appclient should have permissions for all operations in this example. "

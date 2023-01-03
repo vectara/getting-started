@@ -50,7 +50,7 @@ public class RestIndex {
       String indexJsonRequest = mapper.writer().writeValueAsString(writeRequest);
       System.out.println(indexJsonRequest);
       HttpRequest.Builder builder = HttpRequest.newBuilder()
-          .uri(URI.create(String.format("https://h.%s/v1/index", indexingUrl)))
+          .uri(URI.create(String.format("https://%s/v1/index", indexingUrl)))
           .headers("Content-Type", "application/json", "customer-id", String.valueOf(customerId))
           .POST(HttpRequest.BodyPublishers.ofString(indexJsonRequest));
       builder.header("Authorization", "Bearer " + jwtToken);

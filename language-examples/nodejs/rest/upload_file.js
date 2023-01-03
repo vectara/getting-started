@@ -20,7 +20,7 @@ module.exports = {
                 'Content-Type': 'multipart/form-data'
             }
         };
-        const result = await axios.post(`https://h.${indexing_endpoint}/upload`, data, config);
+        const result = await axios.post(`https://${indexing_endpoint}/v1/upload`, data, config);
         return result;
     }
 };

@@ -13,7 +13,7 @@
  */
 include 'getJwtToken.php';
 
-$url = 'https://h.' . $_POST['admin_endpoint'] . '/v1/reset-corpus';
+$url = 'https://' . $_POST['admin_endpoint'] . '/v1/reset-corpus';
 $customer_id = $_POST['customer_id'];
 
 $jwt_token = get_token(
