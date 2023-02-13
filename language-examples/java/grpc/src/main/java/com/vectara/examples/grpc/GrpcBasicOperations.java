@@ -1,5 +1,7 @@
 package com.vectara.examples.grpc;
 
+import com.beust.jcommander.ParameterException;
+import com.google.common.base.Strings;
 import com.vectara.AdminServiceGrpc;
 import com.vectara.AdminServiceGrpc.AdminServiceBlockingStub;
 import com.vectara.IndexServiceGrpc;
@@ -41,7 +43,22 @@ public class GrpcBasicOperations {
 
   public static void main(String[] argv) {
     GrpcArgs args = new GrpcArgs();
-    JCommander.newBuilder().addObject(args).build().parse(argv);
+    try {
+      JCommander
+          .newBuilder()
+          .programName(GrpcBasicOperations.class.getName())
+          .addObject(args)
+          .build()
+          .parse(argv);
+      if (Strings.isNullOrEmpty(args.authUrl)) {
+        args.authUrl = defaultProdAuthUrl(args.customerId);
+        LOGGER.info("Computed authentication URL: " + args.authUrl);
+      }
+    } catch (ParameterException e) {
+      e.usage();
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
     String jwtToken = getJwtToken(args.authUrl, args.appClientId, args.appClientSecret);
     if (jwtToken == null) {
       LOGGER.log(
@@ -72,6 +89,15 @@ public class GrpcBasicOperations {
     }
   }
 
+  /**
+   * Compute the OAuth 2.0 authentication URL for production for the
+   * given customer.
+   */
+  private static String defaultProdAuthUrl(Long customerId) {
+    return String.format(
+        "https://vectara-prod-%d.auth.us-west-2.amazoncognito.com", customerId);
+  }
+
   /** Retrieves a JWT Token based on authUrl, ClientID and ClientSecret. */
   private static String getJwtToken(String authUrl, String clientId, String clientSecret) {
     try {
@@ -94,24 +120,58 @@ public class GrpcBasicOperations {
         .build();
   }
 
-  private static IndexDocumentRequest getDocument(long customerId, long corpusId) {
+  /**
+   * Returns a sample document for indexing.
+   */
+  private static IndexDocumentRequest getGettysburgAddress(long customerId, long corpusId) {
     return IndexDocumentRequest.newBuilder()
         .setCorpusId(corpusId)
         .setCustomerId(customerId)
         .setDocument(
             Document.newBuilder()
-                .setDocumentId("doc-id-1")
-                .setTitle("Title of the document.")
-                .setDescription("Description of the document.")
-                .setMetadataJson("{\"author\":\"Vectara\", \"date_created\":\"Jul 1st, 2022\"}")
+                .setDocumentId("gettysburg-address")
+                .setTitle("Address Delivered at the Dedication of the Cemetery at Gettysburg")
+                .setDescription(
+                    "The Gettysburg Address is a speech that U.S. President Abraham Lincoln "
+                        + "delivered during the American Civil War at the dedication of the "
+                        + "Soldiers' National Cemetery, now known as Gettysburg National Cemetery, "
+                        + "in Gettysburg, Pennsylvania on the afternoon of November 19, 1863, "
+                        + "four and a half months after the Union armies defeated Confederate "
+                        + "forces in the Battle of Gettysburg, the Civil War's deadliest battle."
+                )
+                .setMetadataJson("{\"author\":\"Abraham Lincoln\", \"delivered\":\"1863-Nov-19\"}")
                 .addSection(
                     Section.newBuilder()
                         .setId(1)
-                        .setTitle("Test Section")
-                        .setText("Some dummy text.")
-                        .build())
-                .build())
-        .build();
+                        .setText(
+                            " Four score and seven years ago our fathers brought forth on this "
+                                + "continent, a new nation, conceived in Liberty, and dedicated "
+                                + "to the proposition that all men are created equal.\n"
+                                + "\n"
+                                + "Now we are engaged in a great civil war, testing whether that "
+                                + "nation, or any nation so conceived and dedicated, can long "
+                                + "endure. We are met on a great battle-field of that war. We have "
+                                + "come to dedicate a portion of that field, as a final resting "
+                                + "place for those who here gave their lives that that nation "
+                                + "might live. It is altogether fitting and proper that we should "
+                                + "do this.\n"
+                                + "\n"
+                                + "But, in a larger sense, we can not dedicate -- we can not "
+                                + "consecrate -- we can not hallow -- this ground. The brave men, "
+                                + "living and dead, who struggled here, have consecrated it, far "
+                                + "above our poor power to add or detract. The world will little "
+                                + "note, nor long remember what we say here, but it can never "
+                                + "forget what they did here. It is for us the living, rather, to "
+                                + "be dedicated here to the unfinished work which they who fought "
+                                + "here have thus far so nobly advanced. It is rather for us to be "
+                                + "here dedicated to the great task remaining before us -- that "
+                                + "from these honored dead we take increased devotion to that "
+                                + "cause for which they gave the last full measure of devotion -- "
+                                + "that we here highly resolve that these dead shall not have died "
+                                + "in vain -- that this nation, under God, shall have a new birth "
+                                + "of freedom -- and that government of the people, by the people, "
+                                + "for the people, shall not perish from the earth. "
+        ))).build();
   }
 
   /**
@@ -136,7 +196,7 @@ public class GrpcBasicOperations {
                                                               jwtToken,
                                                               customerId,
                                                               corpusId))
-              .index(getDocument(customerId, corpusId));
+              .index(getGettysburgAddress(customerId, corpusId));
       LOGGER.info(String.format("Indexing response: %s", response.toString()));
       return true;
     } catch (SSLException | StatusRuntimeException e) {

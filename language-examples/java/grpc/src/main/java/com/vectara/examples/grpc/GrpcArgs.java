@@ -8,13 +8,13 @@ class GrpcArgs {
       names = {"--customer-id"},
       description = "Unique customer ID in Vectara platform.",
       required = true)
-  Long customerId = 1890073338L;
+  Long customerId = null;
 
   @Parameter(
       names = {"--corpus-id"},
       description = "Corpus ID against which examples need to be run.",
       required = true)
-  Long corpusId = 321L;
+  Long corpusId = 1L;
 
   @Parameter(
       names = {"--admin-endpoint"},
@@ -39,13 +39,15 @@ class GrpcArgs {
 
   @Parameter(
       names = {"--app-client-id"},
-      description = "App Client ID retrieved from Vectara console.")
-  String appClientId;
+      description = "App Client ID retrieved from Vectara console.",
+      required = true)
+  @Nullable String appClientId;
 
   @Parameter(
       names = {"--app-client-secret"},
-      description = "App client secret retrieved from Vectara console.")
-  String appClientSecret;
+      description = "App client secret retrieved from Vectara console.",
+      required = true)
+  @Nullable String appClientSecret;
 
   @Parameter(
       names= {"--api-key"},
