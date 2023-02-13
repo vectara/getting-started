@@ -23,6 +23,7 @@ import com.beust.jcommander.JCommander;
 import com.vectara.auth.JwtFetcher;
 import com.vectara.auth.VectaraCallCredentials;
 import com.vectara.auth.VectaraCallCredentials.AuthType;
+import com.vectara.serving.ServingProtos.QueryRequest.ContextConfig;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.GrpcSslContexts;
@@ -77,7 +78,8 @@ public class GrpcBasicOperations {
     // It takes some time to index data in Vectara platform. It is possible that query will
     // return zero results immediately after indexing. Please wait 3-5 minutes and try again if
     // that happens.
-    result = queryData(jwtToken, args.servingEndpoint, "test", args.customerId, args.corpusId);
+    result = queryData(
+        jwtToken, args.servingEndpoint, "How long ago was it?", args.customerId, args.corpusId);
     if (!result) {
       LOGGER.log(Level.SEVERE, "Querying failed. Please see previous logs for details.");
       System.exit(1);
@@ -245,7 +247,8 @@ public class GrpcBasicOperations {
                                                               customerId,
                                                               corpusId))
               .query(builder.build());
-      LOGGER.info(String.format("Querying response: %s", response.toString()));
+      LOGGER.info(
+          String.format("Query <%s> response:\n%s", query, response.toString()));
       return true;
     } catch (SSLException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while querying data: %s", e));
