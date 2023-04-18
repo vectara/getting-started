@@ -1,281 +1,356 @@
 <!DOCTYPE html>
-<html lang="en" style="line-height: 1.15; -webkit-text-size-adjust: 100%;">
-
-<head>
+<html lang="en" style="line-height: 1.15; -webkit-text-size-adjust: 100%">
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="NodeJS Example" />
-</head>
-<style>
+  </head>
+  <style>
     .flexRowJustify {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
     .formField {
-        margin: 3px 0px 3px 0px;
+      margin: 3px 0px 3px 0px;
     }
-</style>
+  </style>
 
-<body style="font-family:system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif,'Segoe UI Emoji';">
-    <div style="margin-left: 10px;">
-        <H1> NodeJS REST Example </H1>
+  <body
+    style="
+      font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+        'Segoe UI Emoji';
+    "
+  >
+    <div style="margin-left: 10px">
+      <h1>NodeJS REST Example</h1>
     </div>
-    <div style="display:flex; flex-direction:column; margin-left:10px;">
-        <div style="max-width: 400px;">
-            <div class="flexRowJustify formField">
-                <label for="customer_id">Customer ID: </label>
-                <input style="min-width: 220px;" type="text" id="customer_id" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="corpus_id">Corpus ID: </label>
-                <input style="min-width: 220px;" type="text" id="corpus_id" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="auth_url">Auth URL: </label>
-                <input style="min-width: 220px;" type="text" id="auth_url" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="client_id">App Client ID: </label>
-                <input style="min-width: 220px;" type="text" id="client_id" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="client_secret">App Client Secret: </label>
-                <input style="min-width: 220px;" type="password" id="client_secret" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="admin_endpoint">Admin Endpoint: </label>
-                <input style="min-width: 220px;" type="text" value="api.vectara.io" id="admin_endpoint" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="serving_endpoint">Serving Endpoint: </label>
-                <input style="min-width: 220px;" type="text" value="api.vectara.io" id="serving_endpoint" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="indexing_endpoint">Indexing Endpoint: </label>
-                <input style="min-width: 220px;" type="text" value="api.vectara.io" id="indexing_endpoint" />
-            </div>
-            <div class="flexRowJustify formField">
-                <label for="api_key">API Key: </label>
-                <input style="min-width: 220px;" type="text" id="api_key" />
-            </div>
+    <div style="display: flex; flex-direction: column; margin-left: 10px">
+      <div style="max-width: 400px">
+        <div class="flexRowJustify formField">
+          <label for="customer_id">Customer ID: </label>
+          <input style="min-width: 220px" type="text" id="customer_id" />
         </div>
-        <div class="flexRowJustify" style="max-width: 500px; margin-top: 30px;">
-            <button id="create_corpus">Create Corpus</button>
-            <button id="delete_corpus">Delete Corpus</button>
-            <button id="reset_corpus">Reset Corpus</button>
-            <button id="index_document">Index Document</button>
-            <button id="upload_file">Upload File</button>
-            <button id="query_data">Query Data (OAuth)</button>
-            <button id="query_data_api_key">Query Data (API Key)</button>
+        <div class="flexRowJustify formField">
+          <label for="corpus_id">Corpus ID: </label>
+          <input style="min-width: 220px" type="text" id="corpus_id" />
         </div>
+        <div class="flexRowJustify formField">
+          <label for="auth_url">Auth URL: </label>
+          <input style="min-width: 220px" type="text" id="auth_url" />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="client_id">App Client ID: </label>
+          <input style="min-width: 220px" type="text" id="client_id" />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="client_secret">App Client Secret: </label>
+          <input style="min-width: 220px" type="password" id="client_secret" />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="admin_endpoint">Admin Endpoint: </label>
+          <input
+            style="min-width: 220px"
+            type="text"
+            value="api.vectara.io"
+            id="admin_endpoint"
+          />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="serving_endpoint">Serving Endpoint: </label>
+          <input
+            style="min-width: 220px"
+            type="text"
+            value="api.vectara.io"
+            id="serving_endpoint"
+          />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="indexing_endpoint">Indexing Endpoint: </label>
+          <input
+            style="min-width: 220px"
+            type="text"
+            value="api.vectara.io"
+            id="indexing_endpoint"
+          />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="api_key">API Key: </label>
+          <input style="min-width: 220px" type="text" id="api_key" />
+        </div>
+        <div class="flexRowJustify formField">
+          <label for="document_id">Document Id: </label>
+          <input style="min-width: 220px" type="text" id="document_id" />
+        </div>
+      </div>
+      <div class="flexRowJustify" style="max-width: 500px; margin-top: 30px">
+        <button id="create_corpus">Create Corpus</button>
+        <button id="delete_corpus">Delete Corpus</button>
+        <button id="reset_corpus">Reset Corpus</button>
+        <button id="index_document">Index Document</button>
+        <button id="upload_file">Upload File</button>
+        <button id="query_data">Query Data (OAuth)</button>
+        <button id="query_data_api_key">Query Data (API Key)</button>
+        <button id="delete_document">Delete Document</button>
+      </div>
     </div>
-    <div style="margin-left: 10px;">
-        <p><label for="status">Result status</label></p>
-        <textarea id="status" rows="20" cols="100"></textarea>
+    <div style="margin-left: 10px">
+      <p><label for="status">Result status</label></p>
+      <textarea id="status" rows="20" cols="100"></textarea>
     </div>
     <script>
-        let create_corpus_btn = document.getElementById("create_corpus");
-        create_corpus_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let admin_endpoint = document.getElementById("admin_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
+      let create_corpus_btn = document.getElementById("create_corpus");
+      create_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
 
-            fetch("/createCorpus", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    admin_endpoint,
-                    customer_id,
-                    auth_url,
-                    client_id,
-                    client_secret
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    console.log(data);
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
-        });
-
-        let reset_corpus_btn = document.getElementById("reset_corpus");
-        reset_corpus_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let admin_endpoint = document.getElementById("admin_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
-
-            fetch("/resetCorpus", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    admin_endpoint,
-                    customer_id,
-                    auth_url,
-                    client_id,
-                    client_secret,
-                    corpus_id
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    console.log(data);
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
-        });
-
-        let delete_corpus_btn = document.getElementById("delete_corpus");
-        delete_corpus_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let admin_endpoint = document.getElementById("admin_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
-
-            fetch("/deleteCorpus", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    admin_endpoint,
-                    customer_id,
-                    auth_url,
-                    client_id,
-                    client_secret,
-                    corpus_id
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    console.log(data);
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
-        });
-
-
-        let query_data_btn = document.getElementById("query_data");
-        query_data_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let serving_endpoint = document.getElementById("serving_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
-
-            fetch("/queryData", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    serving_endpoint,
-                    customer_id,
-                    corpus_id,
-                    auth_url,
-                    client_id,
-                    client_secret
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
+        fetch("/createCorpus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            admin_endpoint,
+            customer_id,
+            auth_url,
+            client_id,
+            client_secret,
+          }),
         })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
 
-        let upload_file_btn = document.getElementById("upload_file");
-        upload_file_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let indexing_endpoint = document.getElementById("indexing_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
+      let reset_corpus_btn = document.getElementById("reset_corpus");
+      reset_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-            fetch("/uploadFile", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    indexing_endpoint,
-                    customer_id,
-                    corpus_id,
-                    auth_url,
-                    client_id,
-                    client_secret
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
+        fetch("/resetCorpus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            admin_endpoint,
+            customer_id,
+            auth_url,
+            client_id,
+            client_secret,
+            corpus_id,
+          }),
         })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
 
-        let index_document_btn = document.getElementById("index_document");
-        index_document_btn.addEventListener("click", function () {
-            let auth_url = document.getElementById("auth_url").value;
-            let client_id = document.getElementById("client_id").value;
-            let client_secret = document.getElementById("client_secret").value;
-            let indexing_endpoint = document.getElementById("indexing_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
+      let delete_corpus_btn = document.getElementById("delete_corpus");
+      delete_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-            fetch("/indexDocument", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    indexing_endpoint,
-                    customer_id,
-                    corpus_id,
-                    auth_url,
-                    client_id,
-                    client_secret
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
+        fetch("/deleteCorpus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            admin_endpoint,
+            customer_id,
+            auth_url,
+            client_id,
+            client_secret,
+            corpus_id,
+          }),
         })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
 
-        let query_data_api_key_btn = document.getElementById("query_data_api_key");
-        query_data_api_key_btn.addEventListener("click", function () {
-            let serving_endpoint = document.getElementById("serving_endpoint").value;
-            let customer_id = document.getElementById("customer_id").value;
-            let corpus_id = document.getElementById("corpus_id").value;
-            let api_key = document.getElementById("api_key").value;
+      let query_data_btn = document.getElementById("query_data");
+      query_data_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let serving_endpoint =
+          document.getElementById("serving_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-            fetch("/queryDataWithApiKey", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    serving_endpoint,
-                    customer_id,
-                    corpus_id,
-                    api_key
-                })
-            })
-                .then((response) => { return response.json(); })
-                .then((data) => {
-                    document.getElementById("status").innerHTML = JSON.stringify(data);
-                });
-        })    
+        fetch("/queryData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serving_endpoint,
+            customer_id,
+            corpus_id,
+            auth_url,
+            client_id,
+            client_secret,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
+
+      let upload_file_btn = document.getElementById("upload_file");
+      upload_file_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+
+        fetch("/uploadFile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            indexing_endpoint,
+            customer_id,
+            corpus_id,
+            auth_url,
+            client_id,
+            client_secret,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
+
+      let index_document_btn = document.getElementById("index_document");
+      index_document_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+
+        fetch("/indexDocument", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            indexing_endpoint,
+            customer_id,
+            corpus_id,
+            auth_url,
+            client_id,
+            client_secret,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
+
+      let query_data_api_key_btn =
+        document.getElementById("query_data_api_key");
+      query_data_api_key_btn.addEventListener("click", function () {
+        let serving_endpoint =
+          document.getElementById("serving_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        let api_key = document.getElementById("api_key").value;
+
+        fetch("/queryDataWithApiKey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            serving_endpoint,
+            customer_id,
+            corpus_id,
+            api_key,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
+
+      let delete_doc_btn = document.getElementById("delete_document");
+      delete_doc_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        let doc_id = document.getElementById("document_id").value;
+
+        fetch("/deleteDocument", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            indexing_endpoint,
+            customer_id,
+            corpus_id,
+            auth_url,
+            client_id,
+            client_secret,
+            doc_id,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("status").innerHTML = JSON.stringify(data);
+          });
+      });
     </script>
-</body>
-
+  </body>
 </html>

@@ -2,6 +2,8 @@ package com.vectara.examples.grpc;
 
 import com.vectara.AdminServiceGrpc;
 import com.vectara.AdminServiceGrpc.AdminServiceBlockingStub;
+import com.vectara.CommonProtos.DeleteDocumentRequest;
+import com.vectara.CommonProtos.DeleteDocumentResponse;
 import com.vectara.IndexServiceGrpc;
 import com.vectara.IndexServiceGrpc.IndexServiceBlockingStub;
 import com.vectara.QueryServiceGrpc;
@@ -54,6 +56,12 @@ public class GrpcBasicOperations {
     boolean result = indexData(jwtToken, args.indexingEndpoint, args.customerId, args.corpusId);
     if (!result) {
       LOGGER.log(Level.SEVERE, "Indexing failed. Please see previous logs for details.");
+      System.exit(1);
+    }
+
+    result = deleteDocument(jwtToken, args.indexingEndpoint, args.customerId, args.corpusId, "doc-id-1");
+    if (!result) {
+      LOGGER.log(Level.SEVERE, "Delete document failed. Please see previous logs for details.");
       System.exit(1);
     }
 
@@ -141,6 +149,49 @@ public class GrpcBasicOperations {
       return true;
     } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while indexing data: %s", e));
+      return false;
+    } finally {
+      if (channel != null) {
+        channel.shutdown();
+      }
+    }
+  }
+
+  /**
+   * Deletes a document from a corpus in a customer account.
+   *
+   * @param jwtToken A valid JWT token.
+   * @param indexingUrl Indexing URL at which gRPC endpoints are available.
+   * @param customerId The unique customer ID in the Vectara platform.
+   * @param corpusId The unique corpus ID.
+   * @param documentId The ID of the document to be deleted.
+   * @return success or failure.
+   */
+  public static boolean deleteDocument(
+      String jwtToken, String indexingUrl, long customerId, long corpusId, String documentId) {
+    ManagedChannel channel = null;
+    try {
+      channel = managedChannel(indexingUrl);
+      IndexServiceBlockingStub indexing =
+          IndexServiceGrpc.newBlockingStub(channel);
+
+      DeleteDocumentRequest request =
+          DeleteDocumentRequest.newBuilder()
+              .setCustomerId(customerId)
+              .setCorpusId(corpusId)
+              .setDocumentId(documentId)
+              .build();
+      DeleteDocumentResponse response =
+          indexing
+              .withCallCredentials(new VectaraCallCredentials(AuthType.OAUTH_TOKEN,
+                                                              jwtToken,
+                                                              customerId,
+                                                              corpusId))
+              .delete(request);
+      LOGGER.info(String.format("Delete document response: %s", response.toString()));
+      return true;
+    } catch (SSLException | StatusRuntimeException e) {
+      LOGGER.log(Level.SEVERE, String.format("Error while deleting document: %s", e));
       return false;
     } finally {
       if (channel != null) {

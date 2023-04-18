@@ -21,13 +21,17 @@ public class RestBasicOperations {
     }
     // here is how you can programmatically create a new corpus
     RestCreateCorpus.createCorpus(jwtToken, args.adminEndpoint, "VectaraDemo", args.customerId);
+
     // now we have the corpus, we can index documents
     String docId = "mydocumentId1";
     String docTitle = "mydoc-title";
     String docText = "potentially very big content to index";
     RestIndex.indexDocument(jwtToken, args.indexingEndpoint, docTitle, docText, docId, args.customerId, args.corpusId);
+    RestDeleteDocument.deleteDocument(jwtToken, args.indexingEndpoint, docId, args.customerId, args.corpusId);
+
     // we can also upload a file to be indexed.
     RestUploadFile.indexFile(jwtToken, args.indexingEndpoint, args.customerId, args.corpusId);
+
     // It takes some time to index data in Vectara platform. It is possible that query will
     // return zero results immediately after indexing. Please wait 3-5 minutes and try again if
     // that happens.
