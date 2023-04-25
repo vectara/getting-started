@@ -10,6 +10,7 @@ from authlib.integrations.requests_client import OAuth2Session
 import grpc
 
 import admin_pb2
+import common_pb2
 import indexing_pb2
 import services_pb2
 import services_pb2_grpc
@@ -92,7 +93,7 @@ def index(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str):
             
             # Vectara API expects customer_id as a 64-bit binary encoded value in the metadata of
             # all grpcs calls. Following line generates the encoded value from customer ID.
-            packed_customer_id = struct.pack(">q", customer_id)
+            packed_customer_id = struct.pack(">q", int(customer_id))
             response = index_stub.Index(index_req,
                                         credentials=grpc.access_token_call_credentials(jwt_token),
                                         metadata=[("customer-id-bin", packed_customer_id)])
@@ -102,6 +103,42 @@ def index(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str):
     return None, True
 
 
+def delete(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str, doc_id: str):
+    """Deletes a document from the corpus.
+
+    Args:
+        customer_id: Unique customer ID in vectara platform.
+        corpus_id: ID of the corpus to which data needs to be indexed.
+        idx_address: Address of the indexing server. e.g., indexing.vectara.io
+        jwt_token: A valid Auth token.
+        doc_id: corpus-level unique id of document to be deleted.
+
+    Returns:
+        (None, True) in case of success and returns (error, False) in case of failure.
+    """
+
+    logging.info("Deleting document from the corpus.")
+    try:
+        index_stub = services_pb2_grpc.IndexServiceStub(
+            grpc.secure_channel(idx_address, grpc.ssl_channel_credentials()))
+        
+        delete_req = common_pb2.DeleteDocumentRequest()
+        delete_req.customer_id = customer_id
+        delete_req.corpus_id = corpus_id
+        delete_req.document_id = doc_id
+
+        # Vectara API expects customer_id as a 64-bit binary encoded value in the metadata of
+        # all grpcs calls. Following line generates the encoded value from customer ID.
+        packed_customer_id = struct.pack(">q", customer_id)
+        response = index_stub.Delete(delete_req,
+                                     credentials=grpc.access_token_call_credentials(jwt_token),
+                                     metadata=[("customer-id-bin", packed_customer_id)])
+        logging.info("Delete document successful: %s", response)
+        return None, True
+    except grpc.RpcError as rpc_error:
+        return rpc_error, False
+
+
 def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, query: str):
     """This method queries the data.
     Args:
@@ -109,6 +146,7 @@ def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, 
         corpus_id: ID of the corpus to which data needs to be indexed.
         query_address: Address of the querying server. e.g., serving.vectara.io
         jwt_token: A valid Auth token.
+        query: Query to be made to the corpus.
 
     Returns:
         (None, True) in case of success and returns (error, False) in case of failure.
@@ -176,7 +214,6 @@ def create_corpus(customer_id: int, admin_address: str, jwt_token: str):
         return rpc_error, False
 
 
-
 if __name__ == "__main__":
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s", level=logging.INFO)
@@ -210,11 +247,28 @@ if __name__ == "__main__":
                                   args.corpus_id,
                                   args.indexing_endpoint,
                                   token)
+            if not status:
+                logging.error(error)
+                exit(1)
+            error, status = delete(args.customer_id,
+                                   args.corpus_id,
+                                   args.indexing_endpoint,
+                                   token,
+                                   "doc-id-example-1")
+            if not status:
+                logging.error(error)
+                exit(1)
             error, status = query(args.customer_id,
                                   args.corpus_id,
                                   args.serving_endpoint,
                                   token,
                                   args.query)
+            if not status:
+                logging.error(error)
+                exit(1)
             error, status = create_corpus(args.customer_id,
                                           args.admin_endpoint,
                                           token)
+            if not status:
+                logging.error(error)
+                exit(1)

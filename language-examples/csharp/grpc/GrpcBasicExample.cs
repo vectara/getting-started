@@ -24,11 +24,12 @@ namespace VectaraExampleGrpc
                     if (!String.IsNullOrEmpty(jwtToken))
                     {
                         CreateCorpus(args.CustomerId, "Test Corpus from Dotnet", args.AdminEndpoint, jwtToken);
-                        Index(args.CustomerId, args.CorpusId, args.IndexingEndpoint, jwtToken);
+                        var docId = Index(args.CustomerId, args.CorpusId, args.IndexingEndpoint, jwtToken);
                         // It takes some time to index data in Vectara platform. It is possible that query will
                         // return zero results immediately after indexing. Please wait 3-5 minutes and try again if
                         // that happens.
                         Query(args.CustomerId, args.CorpusId, "Test Query.", args.ServingEndpoint, jwtToken);
+                        DeleteDocument(args.CustomerId, args.CorpusId, args.IndexingEndpoint, jwtToken, docId);
                     }
                     else
                     {
@@ -95,7 +96,8 @@ namespace VectaraExampleGrpc
         /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
         /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
         /// <param name="jwtToken"> A valid authentication token. </param>
-        private static void Index(long customerId, long corpusId, String indexingEndpoint, String jwtToken)
+        /// <returns> ID of the document that was indexed, or empty string in case of failure. </returns>
+        private static String Index(long customerId, long corpusId, String indexingEndpoint, String jwtToken)
         {
             GrpcChannel channel = null;
             try
@@ -105,11 +107,12 @@ namespace VectaraExampleGrpc
 
                 var indexingClient = new IndexService.IndexServiceClient(channel);
                 var request = new IndexDocumentRequest();
+                String docId = Guid.NewGuid().ToString(); // Generating a random document id.
                 request.CustomerId = customerId;
                 request.CorpusId = corpusId;
                 request.Document = new Document
                 {
-                    DocumentId = Guid.NewGuid().ToString(),  // Generating a random document id.
+                    DocumentId = docId,  
                     Title = "Dummy Title",
                     Description = "Dummy description",
                     MetadataJson = JsonSerializer.Serialize(new Dictionary<string, string>
@@ -126,6 +129,50 @@ namespace VectaraExampleGrpc
                 });
 
                 var result = indexingClient.Index(request);
+                Console.WriteLine(result.ToString());
+                return docId;
+            }
+            catch (RpcException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (channel != null)
+                {
+                    channel.ShutdownAsync();
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Deletes a document from a corpus.
+        /// </summary>
+        /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
+        /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
+        /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
+        /// <param name="jwtToken"> A valid authentication token. </param>
+        /// <param name="docId"> Document Id to be deleted. </param>
+        private static void DeleteDocument(long customerId, 
+                                           long corpusId, 
+                                           String indexingEndpoint, 
+                                           String jwtToken, 
+                                           String docId)
+        {
+            GrpcChannel channel = null;
+            try
+            {
+                String address = "https://" + indexingEndpoint + ":443";
+                channel = AuthenticatedChannel(address, jwtToken, customerId, corpusId);
+
+                var indexingClient = new IndexService.IndexServiceClient(channel);
+                var request = new DeleteDocumentRequest();
+                request.CustomerId = customerId;
+                request.CorpusId = corpusId;
+                request.DocumentId = docId;
+
+                var result = indexingClient.Delete(request);
                 Console.WriteLine(result.ToString());
             }
             catch (RpcException ex)

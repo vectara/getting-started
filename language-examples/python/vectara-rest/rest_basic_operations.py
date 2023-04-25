@@ -1,10 +1,10 @@
-""" This is an example of calling Vectara API via python using HTTP/REST as communication protocol.
-"""
+"""Example of calling Vectara API via python using HTTP/REST as communication protocol."""
 
 import argparse
 import logging
 from rest_create_corpus import create_corpus
 from rest_index_document import index_document
+from rest_delete_document import delete_document
 from rest_query import query
 from rest_upload_file import upload_file
 from rest_util import _get_jwt_token
@@ -43,15 +43,21 @@ if __name__ == "__main__":
                                           token)
             logging.info("Create Corpus response: %s", error.text)
             error, status = upload_file(args.customer_id,
-                                  args.corpus_id,
-                                  args.indexing_endpoint,
-                                  token)
+                                        args.corpus_id,
+                                        args.indexing_endpoint,
+                                        token)
             logging.info("Upload File response: %s", error.text)
             error, status = index_document(args.customer_id,
-                                  args.corpus_id,
-                                  args.indexing_endpoint,
-                                  token)
+                                           args.corpus_id,
+                                           args.indexing_endpoint,
+                                           token)
             logging.info("Index Document response: %s", error.text)
+            error, status = delete_document(args.customer_id,
+                                            args.corpus_id,
+                                            args.indexing_endpoint,
+                                            token,
+                                            "doc-id-2")
+            logging.info("Delete Document response: %s", error.text)
             error, status = query(args.customer_id,
                                   args.corpus_id,
                                   args.serving_endpoint,

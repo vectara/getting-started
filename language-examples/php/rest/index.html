@@ -1,225 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="PHP Example" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="PHP Example" />
-  <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-  <div class="left-margin">
-    <H1> PHP REST Example </H1>
-  </div>
-  <div class="flex-column left-margin">
-    <div calss="small-width">
-      <div class="small-width">
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="customer_id">Customer ID: </label>
-          <input type="text" id="customer_id" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="corpus_id">Corpus ID: </label>
-          <input type="text" id="corpus_id" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="auth_url">Auth URL: </label>
-          <input type="text" id="auth_url" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="client_id">App Client ID: </label>
-          <input type="text" id="client_id" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="client_secret">App Client Secret: </label>
-          <input type="password" id="client_secret" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="admin_endpoint">Admin Endpoint: </label>
-          <input type="text" value="api.vectara.io" id="admin_endpoint" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="serving_endpoint">Serving Endpoint: </label>
-          <input type="text" value="api.vectara.io" id="serving_endpoint" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="indexing_endpoint">Indexing Endpoint: </label>
-          <input type="text" value="api.vectara.io" id="indexing_endpoint" />
-        </div>
-        <div class="flex-row flex-justify-between small-margin">
-          <label for="api_key">API Key: </label>
-          <input type="text" id="api_key" />
+  <body>
+    <div class="left-margin">
+      <h1>PHP REST Example</h1>
+    </div>
+    <div class="flex-column left-margin">
+      <div calss="small-width">
+        <div class="small-width">
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="customer_id">Customer ID: </label>
+            <input type="text" id="customer_id" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="corpus_id">Corpus ID: </label>
+            <input type="text" id="corpus_id" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="auth_url">Auth URL: </label>
+            <input type="text" id="auth_url" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="client_id">App Client ID: </label>
+            <input type="text" id="client_id" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="client_secret">App Client Secret: </label>
+            <input type="password" id="client_secret" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="admin_endpoint">Admin Endpoint: </label>
+            <input type="text" value="api.vectara.io" id="admin_endpoint" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="serving_endpoint">Serving Endpoint: </label>
+            <input type="text" value="api.vectara.io" id="serving_endpoint" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="indexing_endpoint">Indexing Endpoint: </label>
+            <input type="text" value="api.vectara.io" id="indexing_endpoint" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="api_key">API Key: </label>
+            <input type="text" id="api_key" />
+          </div>
+          <div class="flex-row flex-justify-between small-margin">
+            <label for="document_id">Document ID: </label>
+            <input type="text" id="document_id" />
+          </div>
         </div>
       </div>
+      <div class="flex-row button-div flex-justify-between">
+        <button id="create_corpus">Create Corpus</button>
+        <button id="delete_corpus">Delete Corpus</button>
+        <button id="reset_corpus">Reset Corpus</button>
+        <button id="index_document">Index Document</button>
+        <button id="upload_file">Upload File</button>
+        <button id="query_data">Query Data (OAuth)</button>
+        <button id="query_data_api_key">Query Data (API Key)</button>
+        <button id="delete_document">Delete Document</button>
+      </div>
     </div>
-    <div class="flex-row button-div flex-justify-between">
-      <button id="create_corpus">Create Corpus</button>
-      <button id="delete_corpus">Delete Corpus</button>
-      <button id="reset_corpus">Reset Corpus</button>
-      <button id="index_document">Index Document</button>
-      <button id="upload_file">Upload File</button>
-      <button id="query_data">Query Data (OAuth)</button>
-      <button id="query_data_api_key">Query Data (API Key)</button>
+    <div class="left-margin">
+      <p><label for="status">Result status</label></p>
+      <textarea id="status" rows="20" cols="100"></textarea>
     </div>
-  </div>
-  <div class="left-margin">
-    <p><label for="status">Result status</label></p>
-    <textarea id="status" rows="20" cols="100"></textarea>
-  </div>
-  <script>
-    let create_corpus_btn = document.getElementById("create_corpus");
-    create_corpus_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let admin_endpoint = document.getElementById("admin_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
+    <script>
+      let create_corpus_btn = document.getElementById("create_corpus");
+      create_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-      fetch("http://localhost:8000/createCorpus.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          document.getElementById("status").innerHTML = res;
+        fetch("http://localhost:8000/createCorpus.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let delete_corpus_btn = document.getElementById("delete_corpus");
-    delete_corpus_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let admin_endpoint = document.getElementById("admin_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
+      let delete_corpus_btn = document.getElementById("delete_corpus");
+      delete_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-      fetch("http://localhost:8000/deleteCorpus.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}&corpus_id=${corpus_id}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          document.getElementById("status").innerHTML = res;
+        fetch("http://localhost:8000/deleteCorpus.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}&corpus_id=${corpus_id}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let reset_corpus_btn = document.getElementById("reset_corpus");
-    reset_corpus_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let admin_endpoint = document.getElementById("admin_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
+      let reset_corpus_btn = document.getElementById("reset_corpus");
+      reset_corpus_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let admin_endpoint = document.getElementById("admin_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-      fetch("http://localhost:8000/resetCorpus.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}&corpus_id=${corpus_id}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          document.getElementById("status").innerHTML = res;
+        fetch("http://localhost:8000/resetCorpus.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `admin_endpoint=${admin_endpoint}&customer_id=${customer_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}&corpus_id=${corpus_id}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let query_data_btn = document.getElementById("query_data");
-    query_data_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let serving_endpoint = document.getElementById("serving_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
+      let query_data_btn = document.getElementById("query_data");
+      query_data_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let serving_endpoint =
+          document.getElementById("serving_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
 
-      fetch("http://localhost:8000/queryData.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `serving_endpoint=${serving_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&query=Test&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          document.getElementById("status").innerHTML = res;
+        fetch("http://localhost:8000/queryData.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `serving_endpoint=${serving_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&query=Test&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let index_document_btn = document.getElementById("index_document");
-    index_document_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let indexing_endpoint = document.getElementById("indexing_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
-      fetch("http://localhost:8000/indexDocument.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `indexing_endpoint=${indexing_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          console.log(res);
-          document.getElementById("status").innerHTML = res;
+      let index_document_btn = document.getElementById("index_document");
+      index_document_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        fetch("http://localhost:8000/indexDocument.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `indexing_endpoint=${indexing_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            console.log(res);
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let upload_file_btn = document.getElementById("upload_file");
-    upload_file_btn.addEventListener("click", function () {
-      let auth_url = document.getElementById("auth_url").value;
-      let client_id = document.getElementById("client_id").value;
-      let client_secret = document.getElementById("client_secret").value;
-      let indexing_endpoint = document.getElementById("indexing_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
-      fetch("http://localhost:8000/uploadFile.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `indexing_endpoint=${indexing_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          console.log(res);
-          document.getElementById("status").innerHTML = res;
+      let upload_file_btn = document.getElementById("upload_file");
+      upload_file_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        fetch("http://localhost:8000/uploadFile.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `indexing_endpoint=${indexing_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}`,
         })
-    })
+          .then((response) => response.text())
+          .then((res) => {
+            console.log(res);
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
-    let query_data_api_key_btn = document.getElementById("query_data_api_key");
-    query_data_api_key_btn.addEventListener("click", function () {
-      let serving_endpoint = document.getElementById("serving_endpoint").value;
-      let customer_id = document.getElementById("customer_id").value;
-      let corpus_id = document.getElementById("corpus_id").value;
-      let api_key = document.getElementById("api_key").value;
+      let query_data_api_key_btn =
+        document.getElementById("query_data_api_key");
+      query_data_api_key_btn.addEventListener("click", function () {
+        let serving_endpoint =
+          document.getElementById("serving_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        let api_key = document.getElementById("api_key").value;
 
-      fetch("http://localhost:8000/queryDataApiKey.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: `serving_endpoint=${serving_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&query=Test&api_key=${api_key}`,
-      })
-        .then((response) => response.text())
-        .then((res) => {
-          document.getElementById("status").innerHTML = res;
+        fetch("http://localhost:8000/queryDataApiKey.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `serving_endpoint=${serving_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&query=Test&api_key=${api_key}`,
         })
-    })    
-  </script>
-</body>
+          .then((response) => response.text())
+          .then((res) => {
+            document.getElementById("status").innerHTML = res;
+          });
+      });
 
+      let delete_doc_btn = document.getElementById("delete_document");
+      delete_doc_btn.addEventListener("click", function () {
+        let auth_url = document.getElementById("auth_url").value;
+        let client_id = document.getElementById("client_id").value;
+        let client_secret = document.getElementById("client_secret").value;
+        let indexing_endpoint =
+          document.getElementById("indexing_endpoint").value;
+        let customer_id = document.getElementById("customer_id").value;
+        let corpus_id = document.getElementById("corpus_id").value;
+        let document_id = document.getElementById("document_id").value;
+        fetch("http://localhost:8000/deleteDocument.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: `indexing_endpoint=${indexing_endpoint}&customer_id=${customer_id}&corpus_id=${corpus_id}&auth_url=${auth_url}&client_id=${client_id}&client_secret=${client_secret}&document_id=${document_id}`,
+        })
+          .then((response) => response.text())
+          .then((res) => {
+            console.log(res);
+            document.getElementById("status").innerHTML = res;
+          });
+      });
+    </script>
+  </body>
 </html>
