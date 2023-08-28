@@ -33,7 +33,14 @@ Following are the steps that need to be done to run this example:
    cd language-examples/java/auth
    mvn install
    ```
-3. Build the gRPC example. This will create a target directory with a shaded JAR.
+3. Download the required Protobuf definitions. This script downloads some base protos and stores them in
+   `/tmp/protos` directory. This script is built for a linux OS (preferably Debian-based). If you are running
+   on Windows,then you will have to modify it to run with a terminal like Powershell etc.
+   ```shell
+   cd language-examples/java/grpc
+   sh download_base_protos.sh
+   ```
+4. Build the gRPC example. This will create a target directory with a shaded JAR.
    ```shell
    cd language-examples/java/grpc
    mvn package
