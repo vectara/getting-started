@@ -23,16 +23,18 @@ Please see the details here: [Authentication](../../../README.md).
 Following are the steps that need to be done to run this example:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to `vectara-demo/csharp/grpc` directory.
-3. Run the `download_google_protos.sh` script on terminal like following:
+2. cd to `vectara-demo/csharp/common` directory and run `dotnet build common.csproj`. This will build the authentication
+   library and will make it available for subsequent projects.
+3. cd to `vectara-demo/csharp/grpc` directory.
+4. Run the `download_base_protos.sh` script on terminal like following:
 
-    `sh download_google_protos.sh`
+    `sh download_base_protos.sh`
     
     This script downloads google's base protos and stores them in `/tmp/protos` directory.
 
     > This script is built for a linux OS (preferably Debian-based). If you are running on windows, then you will have to modify it to run with a terminal like Powershell etc.    
 
-4. Compile and run the dotnet application and pass parameters like the following:
+5. Compile and run the dotnet application and pass parameters like the following:
 
     a. If you are using OAuth2 as the authentication method:
 
