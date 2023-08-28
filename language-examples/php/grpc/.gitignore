@@ -6,5 +6,6 @@ composer.lock
 
 /Com/
 /GPBMetadata/
+/Grpc
 
 grpc_php_plugin
