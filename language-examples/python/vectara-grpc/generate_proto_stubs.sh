@@ -2,16 +2,15 @@
 
 # For all the proto definitions available in ../../../public/proto folder, this script generates 
 # python proto stubs in the current directory. These stubs will be needed to make gRPC calls 
-# in python program.
+# in python program. It first downloads required proto definition imports that don't have released
+# generated stubs for python and generates them, too.
 
-EXROOT=/tmp
-EXTERNAL=${EXROOT}/google/api
+EXROOT=/tmp/protos
 
-mkdir -p ${EXTERNAL}
-curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto\
-    > ${EXTERNAL}/http.proto
-curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto\
-    > ${EXTERNAL}/annotations.proto
+curl --create-dirs -o ${EXROOT}/protoc-gen-openapiv2/options/annotations.proto\
+    https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/main/protoc-gen-openapiv2/options/annotations.proto
+curl --create-dirs -o ${EXROOT}/protoc-gen-openapiv2/options/openapiv2.proto\
+    https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/main/protoc-gen-openapiv2/options/openapiv2.proto
 
 python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --grpc_python_out=. \
     ../../../protos/admin.proto \
@@ -20,4 +19,6 @@ python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --g
     ../../../protos/indexing.proto \
     ../../../protos/services.proto \
     ../../../protos/serving.proto \
-    ../../../protos/status.proto
+    ../../../protos/status.proto \
+    ${EXROOT}/protoc-gen-openapiv2/options/annotations.proto \
+    ${EXROOT}/protoc-gen-openapiv2/options/openapiv2.proto
