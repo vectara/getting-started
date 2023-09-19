@@ -1,6 +1,6 @@
 # README #
 
-### Calling Vectara API via gRPC ###
+### Calling the Vectara API via gRPC ###
 
 The Vectara APIs are divided into three parts:
 
@@ -18,8 +18,9 @@ demonstrate the following functionality:
 
 ### Authentication
 
-There are two supported authentication methods Vectara. 
-Please see the details here: [Authentication](../../../README.md).
+Vectara supports OAuth2 and API Key authentication methods. For details, please visit
+[docs.vectara.com](https://docs.vectara.com). You can also find more information in this
+repository's top-level [README](../../../README.md) file.
 
 ### Running the Example
 > This example is built with JDK 11. To run this example, JDK 11 needs to be installed and discoverable.
@@ -37,9 +38,11 @@ Following are the steps that need to be done to run this example:
    cd language-examples/java/grpc
    mvn package
    ```
-5. Run the jar file with a command like following:
+5. Run the jar file with either of the commands below, depending on the authentication
+   method you are using:
 
-    a. If you are using OAuth2 as the authentication method:
+    a. If you are using [OAuth2](https://docs.vectara.com/docs/api-reference/auth-apis/oauth-2) as 
+       the authentication method:
     ```shell
        java -cp target/grpc-1.0-SNAPSHOT.jar com.vectara.examples.grpc.GrpcBasicOperations \
          --customer-id ${YOUR_CUSTOMER_ID} \
@@ -48,7 +51,8 @@ Following are the steps that need to be done to run this example:
          --app-client-id "${YOUR_APPCLIENT_ID}" \
          --app-client-secret "${YOUR_APPCLIENT_SECRET}"
     ```
-    b. If you are using an API key as the authentication method:
+    b. If you are using an [API key](https://docs.vectara.com/docs/common-use-cases/app-authn-authz/api-keys)
+       as the authentication method:
     ```shell
        java -cp target/grpc-1.0-SNAPSHOT.jar com.vectara.examples.grpc.GrpcApiKeyQueries \
          --customer-id ${YOUR_CUSTOMER_ID} \
