@@ -29,10 +29,10 @@ Following are the steps that need to be done to run this example:
 
     `source path/to/venv/bin/activate`
 
-3. cd to `vectara-demo/python` directory and run the requirements.txt file to install all the required python dependencies:
+3. cd to `language-examples/python` directory and run the requirements.txt file to install all the required python dependencies:
 
     `pip3 install -r requirements.txt`
-4. cd to `vectara-demo/python/vectara-grpc` directory.
+4. cd to `language-examples/python/vectara-grpc` directory.
 5. Run the `generate_proto_stubs.sh` file on terminal like following:
 
     `sh generate_proto_stubs.sh`

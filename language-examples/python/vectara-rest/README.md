@@ -28,11 +28,11 @@ Following are the steps that need to be done to run this example:
 
     `source path/to/venv/bin/activate`
 
-3. cd to `vectara-demo/python` directory and run the requirements.txt file to install all the required python dependencies:
+3. cd to `language-examples/python` directory and run the requirements.txt file to install all the required python dependencies:
 
     `pip3 install -r requirements.txt`
 
-4. cd to `vectara-demo/python/vectara-rest` directory.
+4. cd to `language-examples/python/vectara-rest` directory.
 5. Run the python code with a command like following:
 
     a. If you are using OAuth2 as the authentication method:

@@ -27,7 +27,7 @@ This example requires php-curl to be installed on the server. You can install it
 To run the example, do the following:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to `vectara-demo/php/rest` directory.
+2. cd to `language-examples/php/rest` directory.
 3. Run your PHP server with a command like following:
 
     `php -S localhost:8000`

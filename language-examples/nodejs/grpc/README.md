@@ -23,7 +23,7 @@ Please see the details here: [Authentication](../../../README.md).
 To run the example, do the following:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to `vectara-demo/nodejs/grpc` directory.
+2. cd to `language-examples/nodejs/grpc` directory.
 3. Run the following command to install node dependencies:
 
     `npm install`

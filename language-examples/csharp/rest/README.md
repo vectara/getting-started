@@ -23,7 +23,7 @@ Please see the details here: [Authentication](../../../README.md).
 Following are the steps that need to be done to run this example:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to `vectara-demo/csharp/rest` directory.
+2. cd to `language-examples/csharp/rest` directory.
 3. Compile and run the dotnet application and pass parameters like the following:
 
     a. If you are using OAuth2 as the authentication method:

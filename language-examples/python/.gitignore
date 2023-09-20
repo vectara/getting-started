@@ -1,2 +1,3 @@
 .vscode/
 vectara-grpc/__pycache__/
+vectara-grpc/protoc_gen_openapiv2/
