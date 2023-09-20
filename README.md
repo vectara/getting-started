@@ -45,11 +45,10 @@ All of this is demonstrated in the code. For further clarification, please see t
 
 > Please note that your App Client needs to have sufficient privileges to perform indexing, querying or admin tasks. These privileges can be assigned in Vectara console.
 
-
 ### API Keys
-The API Key authentication method is supported with Serving/Querying only. 
+The API Key authentication method supports access to both our [Standard Indexing API](https://docs.vectara.com/docs/api-reference/indexing-apis/indexing) and [Search API](https://docs.vectara.com/docs/api-reference/search-apis/search). You can also limit key acess to just the Search APIs.  
 
-Use the following link to generate an API Key via Vectara platform. 
-[Api Keys](https://docs.vectara.com/docs/api-keys)
+View our [API Keys documentation](https://docs.vectara.com/docs/api-keys) on how to generate an API Key via the Vectara platform. 
 
-> While generating an API Key, make sure that you have assigned the correct corpus to it.
+> While generating an API Key, make sure that you have assigned the correct corpus to it. Don't use API keys to provide public client access to corpora with sensitive data. Configure OAuth API authentication instead to securely provide access for such public usage.
+
