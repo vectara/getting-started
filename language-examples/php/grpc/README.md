@@ -39,12 +39,12 @@ Please see the details here: [Authentication](../../../README.md).
 To run the example, do the following:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to `vectara-demo/php/grpc` directory.
+2. cd to `language-examples/php/grpc` directory.
 3. Run the `generate_proto_stubs.sh` shell script:
 
     `sh generate_proto_stubs.sh`
    
-   This will generate threee folders containing Vectara proto php stubs: `Com/Vectara/`, `GPBMetadata/`, and `Grpc/`
+   This will generate three folders containing Vectara proto php stubs: `Com/Vectara/`, `GPBMetadata/`, and `Grpc/`
 
 4. Install php dependencies using the composer script. This will make sure that all required dependencies are downloaded:
 
