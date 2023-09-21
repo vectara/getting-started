@@ -23,29 +23,22 @@ Vectara supports OAuth2 and API Key authentication methods. For details, please 
 repository's top-level [README](../../../README.md) file.
 
 ### Running the Example
-> This example is built with JDK 11. To run this example, JDK 11 needs to be installed and discoverable.
+> This example is built with JDK 11. To run this example, JDK 11+ needs to be installed and discoverable.
 
 Following are the steps that need to be done to run this example:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. Build the authentication library and make it available for subsequent projects.
+2. Build the authentication library if you haven't already.
    ```shell
    cd language-examples/java/auth
    mvn install
    ```
-3. Download the required Protobuf definitions. This script downloads some base protos and stores them in
-   `/tmp/protos` directory. This script is built for a linux OS (preferably Debian-based). If you are running
-   on Windows,then you will have to modify it to run with a terminal like Powershell etc.
-   ```shell
-   cd language-examples/java/grpc
-   sh download_base_protos.sh
-   ```
-4. Build the gRPC example. This will create a target directory with a shaded JAR.
+3. Build the gRPC example. This will create a target directory with a shaded JAR.
    ```shell
    cd language-examples/java/grpc
    mvn package
    ```
-5. Run the jar file with either of the commands below, depending on the authentication
+4. Run the jar file with either of the commands below, depending on the authentication
    method you are using:
 
     a. If you are using [OAuth2](https://docs.vectara.com/docs/api-reference/auth-apis/oauth-2) as 

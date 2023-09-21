@@ -30,7 +30,7 @@ public class RestApiKeyQueries {
     }
     String apiKey = args.apiKey;
 
-    var result = queryData(apiKey, args.servingEndpoint, "test", args.customerId, args.corpusId);
+    var result = queryData(apiKey, args.servingEndpoint, args.query, args.customerId, args.corpusId);
     if (!result) {
       LOGGER.log(Level.SEVERE, "Querying failed. Please see previous logs for details.");
       System.exit(1);

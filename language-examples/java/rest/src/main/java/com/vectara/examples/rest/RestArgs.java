@@ -52,4 +52,9 @@ public class RestArgs {
       description = "API key retrieved from Vectara console")
   @Nullable
   String apiKey = null;
+  
+  @Parameter(
+      names= {"--query"},
+      description = "The query you want to send to the backend.")
+  String query = "What is the meaning of life?";
 }
