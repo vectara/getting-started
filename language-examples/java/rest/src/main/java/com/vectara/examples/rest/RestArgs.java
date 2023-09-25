@@ -55,6 +55,6 @@ public class RestArgs {
   
   @Parameter(
       names= {"--query"},
-      description = "The query you want to send to the backend.")
+      description = "The query you want to send to Vectara.")
   String query = "What is the meaning of life?";
 }

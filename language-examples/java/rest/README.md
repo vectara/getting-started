@@ -27,7 +27,7 @@ Following are the steps that need to be done to run this example:
    cd language-examples/java/auth
    mvn install
    ```
-3. Build the rest example. This will create a target directory with a shaded JAR.
+3. Build the REST example. This will create a target directory with a shaded JAR.
    ```shell
    cd language-examples/java/rest
    mvn package
