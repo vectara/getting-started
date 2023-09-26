@@ -101,7 +101,7 @@ public class JwtFetcher {
         return null;
       }
       if (map.containsKey("access_token")) {
-        return (String) map.get("access_token");
+        return String.valueOf(map.get("access_token"));
       }
       return null;
     } catch (IOException | InterruptedException e) {
