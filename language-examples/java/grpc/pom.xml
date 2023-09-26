@@ -21,28 +21,24 @@
   </properties>
 
   <dependencies>
+    <!-- Vectara Auth-->
+    <dependency>
+      <groupId>com.vectara.examples</groupId>
+      <artifactId>auth</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
     <!-- JCommander -->
     <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.82</version>
     </dependency>
-
-    <!-- Javax Annotations -->
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.3.2</version>
-    </dependency>
-
-    <!-- JWT Handling -->
-    <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
-      <version>3.19.2</version>
-    </dependency>
-
-
     <!-- G O O G L E   g R P C -->
     <dependency>
       <groupId>com.google.api.grpc</groupId>
@@ -64,26 +60,9 @@
       <artifactId>grpc-stub</artifactId>
       <version>1.45.1</version>
     </dependency>
-
-    <!-- Vectara -->
-    <dependency>
-      <groupId>com.vectara.examples</groupId>
-      <artifactId>auth</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
-
   <build>
-    <extensions>
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>1.6.2</version>
-      </extension>
-    </extensions>
-
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -122,11 +101,9 @@
               <addProtoSources>all</addProtoSources>
               <includeDirectories>
                 <include>../../../protos</include>
-                <include>/tmp/protos</include>
               </includeDirectories>
               <inputDirectories>
                 <include>../../../protos</include>
-                <include>/tmp/protos</include>
               </inputDirectories>
               <outputTargets>
                 <outputTarget>
@@ -162,21 +139,6 @@
               <mainClass>com.vectara.examples.grpc.GrpcBasicOperations</mainClass>
             </transformer>
           </transformers>
-          <artifactSet>
-            <excludes>
-              <exclude>com.almworks.sqlite4java:*</exclude>
-            </excludes>
-          </artifactSet>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
         </configuration>
         <executions>
           <execution>

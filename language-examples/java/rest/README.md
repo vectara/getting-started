@@ -17,16 +17,22 @@ There are two supported authentication methods Vectara.
 Please see the details here: [Authentication](../../../README.md).
 
 ### Running the Example
-> This example is built with JDK 11. To run this example, jdk 11 needs to be installed and discoverable.
+> This example is built with JDK 11. To run this example, JDK 11+ needs to be installed and discoverable.
 
 Following are the steps that need to be done to run this example:
 
 1. Clone the repo (Please see details here: [cloning guidelines](../../../README.md)).
-2. cd to 'vectara-java-demo/java/auth' directory and run `mvn install`. This will build the
-   authentication library and will make it available for subsequent projects.
-3. cd to `vectara-java-demo/java/rest` directory.
-4. run `mvn package` (This will create a target directory with a shaded JAR)
-5. Run the jar file with a command like following:
+2. Build the authentication library if you haven't already.
+   ```shell
+   cd language-examples/java/auth
+   mvn install
+   ```
+3. Build the REST example. This will create a target directory with a shaded JAR.
+   ```shell
+   cd language-examples/java/rest
+   mvn package
+   ```
+4. Run the jar file with a command like following:
    a. If you are using OAuth2 as the authentication method:
     ```shell
        java -cp target/rest-1.0-SNAPSHOT.jar com.vectara.examples.rest.RestBasicOperations \
@@ -41,7 +47,8 @@ Following are the steps that need to be done to run this example:
        java -cp target/rest-1.0-SNAPSHOT.jar com.vectara.examples.rest.RestApiKeyQueries \
          --customer-id ${YOUR_CUSTOMER_ID} \
          --corpus-id ${YOUR_CORPUS_ID} \
-         --api-key "${YOUR_API_KEY}"
+         --api-key "${YOUR_API_KEY}" \
+         --query "What is the meaning of life?"
     ```
 
 > Please note the double quotes in the arguments, which indicate a string argument.

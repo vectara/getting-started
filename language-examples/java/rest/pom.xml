@@ -18,6 +18,13 @@
   </properties>
 
   <dependencies>
+    <!-- Vectara Auth-->
+    <dependency>
+      <groupId>com.vectara.examples</groupId>
+      <artifactId>auth</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
     <!-- JCommander -->
     <dependency>
       <groupId>com.beust</groupId>
@@ -29,31 +36,9 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.14.0-rc1</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.3.2</version>
-    </dependency>
-
-    <!-- Vectara -->
-    <dependency>
-      <groupId>com.vectara.examples</groupId>
-      <artifactId>auth</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
+    </dependency> 
   </dependencies>
-
   <build>
-    <extensions>
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>1.6.2</version>
-      </extension>
-    </extensions>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -74,21 +59,6 @@
               <mainClass>com.vectara.examples.rest.RestBasicOperations</mainClass>
             </transformer>
           </transformers>
-          <artifactSet>
-            <excludes>
-              <exclude>com.almworks.sqlite4java:*</exclude>
-            </excludes>
-          </artifactSet>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
         </configuration>
         <executions>
           <execution>

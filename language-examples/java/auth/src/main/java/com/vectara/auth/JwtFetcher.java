@@ -1,6 +1,5 @@
 package com.vectara.auth;
 
-import com.auth0.jwt.JWT;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
@@ -102,7 +101,7 @@ public class JwtFetcher {
         return null;
       }
       if (map.containsKey("access_token")) {
-        return JWT.decode(String.valueOf(map.get("access_token"))).getToken();
+        return String.valueOf(map.get("access_token"));
       }
       return null;
     } catch (IOException | InterruptedException e) {
