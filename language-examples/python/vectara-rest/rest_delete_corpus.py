@@ -1,12 +1,11 @@
-"""Simple example of using the Vectara REST API for deleting a corpus.
-"""
+"""Simple example of using the Vectara REST API for deleting a corpus."""
 
 import json
 import logging
 import requests
 
 def _get_delete_corpus_json(customer_id: int, corpus_id: int):
-    """ Returns a delete corpus json. """
+    """Returns a delete corpus json."""
     corpus = {}
     corpus["customer_id"] = customer_id
     corpus["corpus_id"] = corpus_id
@@ -14,7 +13,8 @@ def _get_delete_corpus_json(customer_id: int, corpus_id: int):
     return json.dumps(corpus)
 
 def delete_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token: str):
-    """Delete a corpus.
+    """Deletes a corpus.
+
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: Corpus ID in vectara platform.
@@ -24,21 +24,26 @@ def delete_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_toke
     Returns:
         (response, True) in case of success and returns (error, False) in case of failure.
     """
-
     post_headers = {
         "customer-id": f"{customer_id}",
         "Authorization": f"Bearer {jwt_token}"
     }
     response = requests.post(
         f"https://{admin_address}/v1/delete-corpus",
-        data=_get_delete_corpus_json(),
+        data=_get_delete_corpus_json(customer_id, corpus_id),
         verify=True,
         headers=post_headers)
 
     if response.status_code != 200:
-        logging.error("Reset Corpus failed with code %d, reason %s, text %s",
+        logging.error("Delete Corpus failed with code %d, reason %s, text %s",
                        response.status_code,
                        response.reason,
                        response.text)
         return response, False
-    return response, True
+
+    message = response.json()
+    if message["status"]["code"] != "OK":
+        logging.error("Delete Corpus failed with status: %s", message.status)
+        return message.status, False
+
+    return message, True

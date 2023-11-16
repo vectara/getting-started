@@ -1,14 +1,14 @@
-""" This is an example of calling Vectara API via python using http/rest as communication protocol.
-"""
+"""This is an example of calling Vectara API via python using http/rest as communication protocol."""
 
 import argparse
 import json
 import logging
 import requests
+import sys
 
 
 def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
-    """ Returns a query json. """
+    """Returns a query JSON."""
     query = {}
     query_obj = {}
 
@@ -25,7 +25,8 @@ def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
 
 
 def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, query: str):
-    """This method queries the data.
+    """Queries the data.
+
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
@@ -34,7 +35,6 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
 
     Returns:
         (response, True) in case of success and returns (error, False) in case of failure.
-
     """
     post_headers = {
         "customer-id": f"{customer_id}",
@@ -53,8 +53,19 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
                        response.reason,
                        response.text)
         return response, False
-    return response, True
 
+    message = response.json()
+    if (message["status"] and
+        any(status["code"] != "OK" for status in message["status"])):
+        logging.error("Query failed with status: %s", message["status"])
+        return message["status"], False
+
+    for response_set in message["responseSet"]:
+        for status in response_set["status"]:
+            if status["code"] != "OK":
+                return status, False
+
+    return message, True
 
 
 if __name__ == "__main__":
@@ -77,8 +88,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args:
-        error, status = query(args.customer_id,
-                              args.corpus_id,
-                              args.serving_endpoint,
-                              args.api_key,
-                              args.query)
+        response, status = query(args.customer_id,
+                                 args.corpus_id,
+                                 args.serving_endpoint,
+                                 args.api_key,
+                                 args.query)
+        logging.info("Query response: %s", response)
+        if not status:
+            sys.exit(1)

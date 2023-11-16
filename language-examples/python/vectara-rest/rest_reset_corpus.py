@@ -31,7 +31,7 @@ def reset_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token
     }
     response = requests.post(
         f"https://{admin_address}/v1/reset-corpus",
-        data=_get_reset_corpus_json(),
+        data=_get_reset_corpus_json(customer_id, corpus_id),
         verify=True,
         headers=post_headers)
 
@@ -41,4 +41,10 @@ def reset_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token
                        response.reason,
                        response.text)
         return response, False
-    return response, True
+
+    message = response.json()
+    if message["status"]["code"] != "OK":
+        logging.error("Delete Corpus failed with status: %s", message.status)
+        return message.status, False
+
+    return message, True

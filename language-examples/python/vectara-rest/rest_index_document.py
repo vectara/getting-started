@@ -1,9 +1,9 @@
-"""Simple example of using the Vectara REST API for indexing.
-"""
+"""Simple example of using the Vectara REST API for indexing."""
 
 import json
 import logging
 import requests
+
 
 def _get_index_request_json(customer_id: int, corpus_id: int):
     """ Returns some example data to index. """
@@ -31,8 +31,10 @@ def _get_index_request_json(customer_id: int, corpus_id: int):
 
     return json.dumps(request)
 
+
 def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str):
-    """ Indexes content to the corpus.
+    """Indexes content to the corpus.
+
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
@@ -41,9 +43,7 @@ def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token
 
     Returns:
         (response, True) in case of success and returns (error, False) in case of failure.
-
     """
-
     post_headers = {
         "Authorization": f"Bearer {jwt_token}",
         "customer-id": f"{customer_id}"
@@ -60,4 +60,10 @@ def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token
                        response.reason,
                        response.text)
         return response, False
-    return response, True
+
+    message = response.json()
+    if message["status"]["code"] != "OK":
+        logging.error("REST upload failed with status: %s", message["status"])
+        return message["status"], False
+
+    return message, True

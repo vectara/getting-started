@@ -1,9 +1,9 @@
-"""Simple example of using the Vectara REST API for searching a corpus.
-"""
+"""Simple example of using the Vectara REST API for searching a corpus."""
 
 import json
 import logging
 import requests
+
 
 def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
     """ Returns a query json. """
@@ -24,6 +24,7 @@ def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
 
 def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, query: str):
     """This method queries the data.
+
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
@@ -51,4 +52,16 @@ def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, 
                        response.reason,
                        response.text)
         return response, False
-    return response, True
+
+    message = response.json()
+    if (message["status"] and
+        any(status["code"] != "OK" for status in message["status"])):
+        logging.error("Query failed with status: %s", message["status"])
+        return message["status"], False
+
+    for response_set in message["responseSet"]:
+        for status in response_set["status"]:
+            if status["code"] != "OK":
+                return status, False
+
+    return message, True
