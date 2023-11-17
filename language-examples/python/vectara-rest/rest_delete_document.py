@@ -6,11 +6,11 @@ import requests
 
 def _get_delete_request_json(customer_id: int, corpus_id: int, doc_id: str):
     """Returns a JSON delete request."""
-    request = {}
-    request['customer_id'] = customer_id
-    request['corpus_id'] = corpus_id
-    request['document_id'] = doc_id
-
+    request = {
+        "customer_id": customer_id,
+        "corpus_id": corpus_id,
+        "document_id": doc_id,
+    }
     return json.dumps(request)
 
 def delete_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str, doc_id: str):
