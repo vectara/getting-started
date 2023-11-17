@@ -3,8 +3,8 @@
 import argparse
 import json
 import logging
-import requests
 import sys
+import requests
 
 
 def _get_query_json(customer_id: int, corpus_id: int, query_value: str):

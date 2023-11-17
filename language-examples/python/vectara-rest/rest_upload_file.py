@@ -56,7 +56,8 @@ def upload_file(customer_id: int, corpus_id: int, idx_address: str, jwt_token: s
         return response, False
 
     message = response.json()["response"]
-    if message["status"]:
+    # An empty status indicates success.
+    if message["status"] and message["status"]["code"] != "ALREADY_EXISTS":
         logging.error("REST upload failed with status: %s", message["status"])
         return message["status"], False
 

@@ -6,7 +6,7 @@ import requests
 
 
 def _get_index_request_json(customer_id: int, corpus_id: int):
-    """ Returns some example data to index. """
+    """Returns some example data to index."""
     document = {}
     document["document_id"] = "doc-id-2"
     # Note that the document ID must be unique for a given corpus
@@ -25,9 +25,9 @@ def _get_index_request_json(customer_id: int, corpus_id: int):
     document["section"] = sections
 
     request = {}
-    request['customer_id'] = customer_id
-    request['corpus_id'] = corpus_id
-    request['document'] = document
+    request["customer_id"] = customer_id
+    request["corpus_id"] = corpus_id
+    request["document"] = document
 
     return json.dumps(request)
 
@@ -62,7 +62,7 @@ def index_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token
         return response, False
 
     message = response.json()
-    if message["status"]["code"] != "OK":
+    if message["status"]["code"] not in ("OK", "ALREADY_EXISTS"):
         logging.error("REST upload failed with status: %s", message["status"])
         return message["status"], False
 

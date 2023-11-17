@@ -67,7 +67,7 @@ if __name__ == "__main__":
                                                                  args.corpus_id,
                                                                  args.indexing_endpoint,
                                                                  token,
-                                            "doc-id-2")
+                                                                 "doc-id-2")
             logging.info("Delete Document response: %s", error)
 
             error, status = rest_query.query(args.customer_id,

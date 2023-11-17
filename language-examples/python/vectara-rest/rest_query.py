@@ -6,24 +6,21 @@ import requests
 
 
 def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
-    """ Returns a query json. """
-    query = {}
-    query_obj = {}
-
-    query_obj["query"] = query_value
-    query_obj["num_results"] = 10
-
-    corpus_key = {}
-    corpus_key["customer_id"] = customer_id
-    corpus_key["corpus_id"] = corpus_id
-
-    query_obj["corpus_key"] = [ corpus_key ]
-    query["query"] = [ query_obj ]
+    """Returns a query JSON."""
+    query = {
+        "query": [
+            {
+                "query": query_value,
+                "num_results": 10,
+                "corpus_key": [{"customer_id": customer_id, "corpus_id": corpus_id}],
+            },
+        ],
+    }
     return json.dumps(query)
 
 
 def query(customer_id: int, corpus_id: int, query_address: str, jwt_token: str, query: str):
-    """This method queries the data.
+    """Queries the data.
 
     Args:
         customer_id: Unique customer ID in vectara platform.

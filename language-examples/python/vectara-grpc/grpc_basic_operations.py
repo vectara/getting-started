@@ -97,7 +97,8 @@ def index(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str):
             response = index_stub.Index(index_req,
                                         credentials=grpc.access_token_call_credentials(jwt_token),
                                         metadata=[("customer-id-bin", packed_customer_id)])
-            if response.status.code != status_pb2.StatusCode.OK:
+            if response.status.code not in (status_pb2.StatusCode.OK,
+                                            status_pb2.StatusCode.ALREADY_EXISTS):
                 logging.error("Index document failed: %s", response.status)
                 return response.status, False
 
