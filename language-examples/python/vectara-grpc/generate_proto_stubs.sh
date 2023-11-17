@@ -35,4 +35,4 @@ python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --g
     protoc-gen-openapiv2/options/annotations.proto \
     protoc-gen-openapiv2/options/openapiv2.proto
 
-echo "Completed."
+echo "Proto compilation completed."
