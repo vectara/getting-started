@@ -5,6 +5,7 @@ import logging
 import sys
 
 import rest_create_corpus
+import rest_delete_corpus
 import rest_delete_document
 import rest_index_document
 import rest_query
@@ -40,42 +41,51 @@ if __name__ == "__main__":
         token = rest_util.get_jwt_token(args.auth_url, args.app_client_id, args.app_client_secret)
 
         if token:
-            error, status = rest_create_corpus.create_corpus(args.customer_id,
-                                                             args.admin_endpoint,
-                                                             token)
-            logging.info("Create Corpus response: %s", error)
+            response, status = rest_create_corpus.create_corpus(args.customer_id,
+                                                                args.admin_endpoint,
+                                                                token)
+            logging.info("Create Corpus response: %s", response)
+            if not status:
+                sys.exit(1)
+            corpus_to_delete = response["corpusId"]
+
+            response, status = rest_delete_corpus.delete_corpus(args.customer_id,
+                                                                corpus_to_delete,
+                                                                args.admin_endpoint,
+                                                                token)
+            logging.info("Delete Corpus response: %s", response)
             if not status:
                 sys.exit(1)
 
-            error, status = rest_upload_file.upload_file(args.customer_id,
-                                                         args.corpus_id,
-                                                         args.indexing_endpoint,
-                                                         token)
-            logging.info("Upload File response: %s", error)
+            response, status = rest_upload_file.upload_file(args.customer_id,
+                                                            args.corpus_id,
+                                                            args.indexing_endpoint,
+                                                            token)
+            logging.info("Upload File response: %s", response)
             if not status:
                 sys.exit(1)
 
-            error, status = rest_index_document.index_document(args.customer_id,
-                                                               args.corpus_id,
-                                                               args.indexing_endpoint,
-                                                               token)
-            logging.info("Index Document response: %s", error)
+            response, status = rest_index_document.index_document(args.customer_id,
+                                                                  args.corpus_id,
+                                                                  args.indexing_endpoint,
+                                                                  token)
+            logging.info("Index Document response: %s", response)
             if not status:
                 sys.exit(1)
 
-            error, status = rest_delete_document.delete_document(args.customer_id,
-                                                                 args.corpus_id,
-                                                                 args.indexing_endpoint,
-                                                                 token,
-                                                                 "doc-id-2")
-            logging.info("Delete Document response: %s", error)
+            response, status = rest_delete_document.delete_document(args.customer_id,
+                                                                    args.corpus_id,
+                                                                    args.indexing_endpoint,
+                                                                    token,
+                                                                    "doc-id-2")
+            logging.info("Delete Document response: %s", response)
 
-            error, status = rest_query.query(args.customer_id,
-                                             args.corpus_id,
-                                             args.serving_endpoint,
-                                             token,
-                                             args.query)
-            logging.info("Query response: %s", error)
+            response, status = rest_query.query(args.customer_id,
+                                                args.corpus_id,
+                                                args.serving_endpoint,
+                                                token,
+                                                args.query)
+            logging.info("Query response: %s", response)
             if not status:
                 sys.exit(1)
         else:

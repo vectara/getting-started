@@ -42,7 +42,7 @@ def create_corpus(customer_id: int, admin_address: str, jwt_token: str):
         return response, False
 
     message = response.json()
-    if message["status"]["code"] != "OK":
+    if message["status"] and message["status"]["code"] != "OK":
         logging.error("Create Corpus failed with status: %s", message["status"])
         return message["status"], False
 

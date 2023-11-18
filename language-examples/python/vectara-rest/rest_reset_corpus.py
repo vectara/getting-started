@@ -7,9 +7,10 @@ import requests
 
 def _get_reset_corpus_json(customer_id: int, corpus_id: int):
     """ Returns a reset corpus json. """
-    corpus = {}
-    corpus["customer_id"] = customer_id
-    corpus["corpus_id"] = corpus_id
+    corpus = {
+        "customer_id": customer_id,
+        "corpus_id": corpus_id,
+    }
 
     return json.dumps(corpus)
 
@@ -43,7 +44,7 @@ def reset_corpus(customer_id: int, corpus_id: int, admin_address: str, jwt_token
         return response, False
 
     message = response.json()
-    if message["status"]["code"] != "OK":
+    if message["status"] and message["status"]["code"] != "OK":
         logging.error("Delete Corpus failed with status: %s", message.status)
         return message.status, False
 

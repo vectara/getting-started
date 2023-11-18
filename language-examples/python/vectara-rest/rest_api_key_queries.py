@@ -1,26 +1,24 @@
-"""This is an example of calling Vectara API via python using http/rest as communication protocol."""
+"""An example of calling the Vectara API via Python using HTTP/REST."""
 
 import argparse
 import json
 import logging
 import sys
+
 import requests
 
 
 def _get_query_json(customer_id: int, corpus_id: int, query_value: str):
     """Returns a query JSON."""
-    query = {}
-    query_obj = {}
-
-    query_obj["query"] = query_value
-    query_obj["num_results"] = 10
-
-    corpus_key = {}
-    corpus_key["customer_id"] = customer_id
-    corpus_key["corpus_id"] = corpus_id
-
-    query_obj["corpus_key"] = [ corpus_key ]
-    query["query"] = [ query_obj ]
+    query = {
+        "query": [
+            {
+                "query": query_value,
+                "num_results": 10,
+                "corpus_key": [{"customer_id": customer_id, "corpus_id": corpus_id}],
+            },
+        ],
+    }
     return json.dumps(query)
 
 

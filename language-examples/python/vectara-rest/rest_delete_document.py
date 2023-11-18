@@ -13,7 +13,12 @@ def _get_delete_request_json(customer_id: int, corpus_id: int, doc_id: str):
     }
     return json.dumps(request)
 
-def delete_document(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str, doc_id: str):
+def delete_document(
+        customer_id: int,
+        corpus_id: int,
+        idx_address: str,
+        jwt_token: str,
+        doc_id: str):
     """Deletes document from the corpus.
 
     Args:

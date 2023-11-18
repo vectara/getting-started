@@ -24,17 +24,11 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
     Returns:
         (response, True) in case of success and returns (error, False) in case of failure.
     """
-    corpus_key = serving_pb2.CorpusKey()
-    corpus_key.corpus_id = corpus_id
-    corpus_key.customer_id = customer_id
-
-    request = serving_pb2.QueryRequest()
-    request.query = query
-    request.num_results = 10
-    request.corpus_key.extend([corpus_key])
+    request = serving_pb2.QueryRequest(query=query, num_results=10)
+    request.corpus_key.append(serving_pb2.CorpusKey(customer_id=customer_id, corpus_id=corpus_id))
 
     batch_request = serving_pb2.BatchQueryRequest()
-    batch_request.query.extend([request])
+    batch_request.query.append(request)
 
     try:
         query_stub = services_pb2_grpc.QueryServiceStub(

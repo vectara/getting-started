@@ -7,22 +7,21 @@ import requests
 
 def _get_upload_file_json():
     """Returns some example JSON file upload data."""
-    document = {}
-    document["document_id"] = "doc-id-1"
-    # Note that the document ID must be unique for a given corpus
-    document["title"] = "An example Title"
-    document["metadata_json"] = json.dumps(
-        {
-            "book-name": "An example title",
-            "collection": "Philosophy",
-            "author": "Example Author"
-        }
-    )
-    sections = []
-    section = {}
-    section["text"] = "An example text that needs to be indexed."
-    sections.append(section)
-    document["section"] = sections
+    document = {
+        # Note that the document ID must be unique for a given corpus.
+        "document_id": "doc-id-1",
+        "title": "An example Title",
+        "metadata_json": json.dumps(
+            {
+                "book-name": "An example title",
+                "collection": "Philosophy",
+                "author": "Example Author",
+            }
+        ),
+        "section": [
+            {"text": "An example text that needs to be indexed."},
+        ],
+    }
 
     return json.dumps(document)
 
@@ -57,7 +56,7 @@ def upload_file(customer_id: int, corpus_id: int, idx_address: str, jwt_token: s
 
     message = response.json()["response"]
     # An empty status indicates success.
-    if message["status"] and message["status"]["code"] != "ALREADY_EXISTS":
+    if message["status"] and message["status"]["code"] not in ("OK", "ALREADY_EXISTS"):
         logging.error("REST upload failed with status: %s", message["status"])
         return message["status"], False
 
