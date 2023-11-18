@@ -5,7 +5,7 @@ import logging
 import requests
 
 def _get_delete_corpus_json(customer_id: int, corpus_id: int):
-    """Returns a delete corpus json."""
+    """Returns a delete corpus JSON."""
     corpus = {
         "customer_id": customer_id,
         "corpus_id": corpus_id,
