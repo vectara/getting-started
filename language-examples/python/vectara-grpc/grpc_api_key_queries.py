@@ -1,18 +1,20 @@
-""" This is an example of calling Vectara API via python using gRPC as communication protocol.
-"""
+"""This is an example of calling Vectara API via python using gRPC as communication protocol."""
 
 import argparse
 import logging
 import struct
+import sys
 
 import grpc
 
 import services_pb2_grpc
 import serving_pb2
+import status_pb2
 
 
 def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, query: str):
-    """This method queries the data.
+    """Queries the data.
+
     Args:
         customer_id: Unique customer ID in vectara platform.
         corpus_id: ID of the corpus to which data needs to be indexed.
@@ -20,21 +22,13 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
         api_key: A valid API key with query access on the corpus.
 
     Returns:
-        (None, True) in case of success and returns (error, False) in case of failure.
-
+        (response, True) in case of success and returns (error, False) in case of failure.
     """
-
-    corpus_key = serving_pb2.CorpusKey()
-    corpus_key.corpus_id = corpus_id
-    corpus_key.customer_id = customer_id
-
-    request = serving_pb2.QueryRequest()
-    request.query = query
-    request.num_results = 10
-    request.corpus_key.extend([corpus_key])
+    request = serving_pb2.QueryRequest(query=query, num_results=10)
+    request.corpus_key.append(serving_pb2.CorpusKey(customer_id=customer_id, corpus_id=corpus_id))
 
     batch_request = serving_pb2.BatchQueryRequest()
-    batch_request.query.extend([request])
+    batch_request.query.append(request)
 
     try:
         query_stub = services_pb2_grpc.QueryServiceStub(
@@ -43,9 +37,20 @@ def query(customer_id: int, corpus_id: int, query_address: str, api_key: str, qu
         response = query_stub.Query(batch_request,
                                     metadata=[("customer-id-bin", packed_customer_id),
                                               ("x-api-key", api_key)])
-        logging.info("Query succeeded with response: %s", response)
-        return None, True
+        if (response.status and
+            any(status.code != status_pb2.StatusCode.OK
+                for status in response.status)):
+            logging.error("Query failed with response: %s", response.status)
+            return response.status, False
+
+        for response_set in response.response_set:
+            for status in response_set.status:
+                if status.code != status_pb2.StatusCode.OK:
+                    return status, False
+
+        return response, True
     except grpc.RpcError as rpc_error:
+        logging.error("Query failed with exception: %s", rpc_error)
         return rpc_error, False
 
 
@@ -68,8 +73,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     if args:
-        error, status = query(args.customer_id,
-                              args.corpus_id,
-                              args.serving_endpoint,
-                              args.api_key,
-                              args.query)
+        response, status = query(args.customer_id,
+                                 args.corpus_id,
+                                 args.serving_endpoint,
+                                 args.api_key,
+                                 args.query)
+        logging.info("Query response: %s", response)
+        if not status:
+            sys.exit(1)
