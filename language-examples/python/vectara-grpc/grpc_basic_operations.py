@@ -132,8 +132,6 @@ def delete(customer_id: int, corpus_id: int, idx_address: str, jwt_token: str, d
         delete_req.corpus_id = corpus_id
         delete_req.document_id = doc_id
 
-        # Vectara API expects customer_id as a 64-bit binary encoded value in the metadata of
-        # all grpcs calls. Following line generates the encoded value from customer ID.
         packed_customer_id = struct.pack(">q", customer_id)
         response = index_stub.Delete(delete_req,
                                      credentials=grpc.access_token_call_credentials(jwt_token),
