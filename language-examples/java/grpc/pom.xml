@@ -46,6 +46,11 @@
       <version>2.14.3</version>
     </dependency>
     <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.22.2</version>
+    </dependency>
+    <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
       <version>1.45.1</version>
@@ -95,7 +100,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <protocVersion>3.21.1</protocVersion>
+              <protocVersion>3.22.2</protocVersion>
               <includeMavenTypes>direct</includeMavenTypes>
               <includeStdTypes>true</includeStdTypes>
               <addProtoSources>all</addProtoSources>
