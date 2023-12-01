@@ -2,8 +2,10 @@
 
 import argparse
 import logging
-import requests
 import sys
+from typing import Any
+
+import requests
 
 import vectara_util
 
@@ -14,7 +16,7 @@ def create_apikey(
     auth_url: str,
     app_client_id: str,
     app_client_secret: str,
-) -> (any, bool):
+) -> tuple[Any, bool]:
     """Creates an API key.
 
     Args:
@@ -25,7 +27,7 @@ def create_apikey(
         app_client_secret: The app client secret.
 
     Returns:
-        (response, True) in case of success and returns (error, False) in case of failure.
+        (apiKey, True) in case of success and returns (error, False) in case of failure.
     """
     jwt_token = vectara_util.get_jwt_token(auth_url, app_client_id, app_client_secret)
     if not jwt_token:
@@ -49,10 +51,11 @@ def create_apikey(
     }
 
     response = requests.post(
-        f"https://api.vectara.io/v1/create-api-key",
+        "https://api.vectara.io/v1/create-api-key",
         json=request,
         verify=True,
         headers=post_headers,
+        timeout=50,
     )
 
     if response.status_code != 200:
@@ -73,14 +76,14 @@ def create_apikey(
 
         if status["code"] == "OK":
             return message["response"][0]["keyId"], True
-        else:
-            logging.error("CreateApiKey failed with status %s", status)
-            return status, False
+        logging.error("CreateApiKey failed with status %s", status)
+        return status, False
 
     return message, False
 
 
 def main():
+    """Main function."""
     parser = argparse.ArgumentParser(
         description="Vectara example to create an API key."
     )
