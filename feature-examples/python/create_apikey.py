@@ -82,7 +82,7 @@ def create_apikey(
     return message, False
 
 
-def main():
+def main() -> None:
     """Main function."""
     parser = argparse.ArgumentParser(
         description="Vectara example to create an API key."
@@ -112,17 +112,16 @@ def main():
 
     args = parser.parse_args()
 
-    if args:
-        response, status = create_apikey(
-            args.customer_id,
-            args.corpus_id,
-            args.auth_url,
-            args.app_client_id,
-            args.app_client_secret,
-        )
-        logging.info("CreateApiKey response: %s", response)
-        if not status:
-            sys.exit(1)
+    response, status = create_apikey(
+        args.customer_id,
+        args.corpus_id,
+        args.auth_url,
+        args.app_client_id,
+        args.app_client_secret,
+    )
+    logging.info("CreateApiKey response: %s", response)
+    if not status:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
