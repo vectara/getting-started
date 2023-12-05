@@ -72,8 +72,8 @@ def create_apikey(
         if len(message["response"]) != 1:
             logging.error("CreateApiKey failed with response %s", message["response"])
             return message["response"], False
-        status = message["response"][0]["status"]
 
+        status = message["response"][0]["status"]
         if status["code"] == "OK":
             return message["response"][0]["keyId"], True
         logging.error("CreateApiKey failed with status %s", status)
