@@ -3,11 +3,12 @@ import argparse
 import logging
 import sys
 
-import create_apikey
-import delete_apikey
-import enable_apikey
-import list_apikeys
-import vectara_util
+from api_key import create_api_key
+from api_key import delete_api_key
+from api_key import enable_api_key
+from api_key import list_api_key
+from utils import utils
+
 
 def main() -> None:
     """Main function."""
@@ -39,17 +40,15 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    jwt_token = vectara_util.get_jwt_token(args.auth_url,
-                                           args.app_client_id,
-                                           args.app_client_secret)
+    jwt_token = utils.get_jwt_token(
+        args.auth_url, args.app_client_id, args.app_client_secret
+    )
     if not jwt_token:
         logging.error("Failed to get JWT token.")
         sys.exit(1)
 
-    response, status = create_apikey.create_apikey(
-        args.customer_id,
-        args.corpus_id,
-        jwt_token
+    response, status = create_api_key.create_apikey(
+        args.customer_id, args.corpus_id, jwt_token
     )
     logging.info("CreateApiKey response: %s, status: %s", response, status)
 
@@ -57,25 +56,15 @@ def main() -> None:
         sys.exit(1)
 
     api_key = response
-    response, status = list_apikeys.list_apikeys(
-        args.customer_id,
-        jwt_token
-    )
+    response, status = list_api_key.list_apikeys(args.customer_id, jwt_token)
     logging.info("ListApiKeys response: %s, status: %s", response, status)
 
-    response, status = enable_apikey.enable_apikey(
-        args.customer_id,
-        api_key,
-        jwt_token,
-        False # Disable the API key.
+    response, status = enable_api_key.enable_apikey(
+        args.customer_id, api_key, jwt_token, False  # Disable the API key.
     )
     logging.info("DisableApiKey response: %s, status: %s", response, status)
 
-    response, status = delete_apikey.delete_apikey(
-        args.customer_id,
-        api_key,
-        jwt_token
-    )
+    response, status = delete_api_key.delete_apikey(args.customer_id, api_key, jwt_token)
     logging.info("DeleteApiKey response: %s, status: %s", response, status)
 
 
