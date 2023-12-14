@@ -1,7 +1,7 @@
 """Example of using the Vectara REST API to list the Api Keys."""
 
 import logging
-from typing import Any
+from typing import Optional
 
 import requests
 
@@ -9,7 +9,7 @@ import requests
 def list_apikeys(
     customer_id: int,
     jwt_token: str,
-) -> tuple[Any, bool]:
+) -> tuple[Optional[str], bool]:
     """Retrieves the list of API keys.
 
     Args:
@@ -41,15 +41,15 @@ def list_apikeys(
             response.reason,
             response.text,
         )
-        return response, False
+        return str(response), False
 
     message = response.json()
     if message["status"]:
-        status = message["status"][0]
+        status = message["status"]
         if status["code"] == "OK":
-            return message, True
+            return str(message), True
 
         logging.error("ListApiKeys failed with status %s", status)
-        return status, False
+        return str(status), False
 
-    return message, False
+    return str(message), False

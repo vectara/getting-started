@@ -2,6 +2,7 @@
 import argparse
 import logging
 import sys
+from typing import Optional
 
 from api_key import create_api_key
 from api_key import delete_api_key
@@ -47,6 +48,8 @@ def main() -> None:
         logging.error("Failed to get JWT token.")
         sys.exit(1)
 
+    response = Optional[str]
+
     response, status = create_api_key.create_apikey(
         args.customer_id, args.corpus_id, jwt_token
     )
@@ -55,7 +58,7 @@ def main() -> None:
     if not status:
         sys.exit(1)
 
-    api_key = response
+    api_key: str = response
     response, status = list_api_key.list_apikeys(args.customer_id, jwt_token)
     logging.info("ListApiKeys response: %s, status: %s", response, status)
 

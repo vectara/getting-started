@@ -1,6 +1,6 @@
 # Feature Examples
 
-These contain examples on how to use different features such as Api Key, Manage User etc. 
+This directory contains examples on how to use different features such as Api Key, Manage User etc. 
 
 ## Running an example
 
@@ -17,4 +17,4 @@ python3 -m api_key.api_key_main \
   --auth-url={AUTH_URL} 
 ```
 
-> Please note that you should run the above command from within python directory.
+> Please note that you should run the above command from within the `python` directory.

@@ -1,7 +1,7 @@
 """Example of using the Vectara REST API to enable or disable an API Key."""
 
 import logging
-from typing import Any
+from typing import Optional
 
 import requests
 
@@ -11,7 +11,7 @@ def enable_apikey(
     key_id: str,
     jwt_token: str,
     enable: bool,
-) -> tuple[Any, bool]:
+) -> tuple[Optional[str], bool]:
     """Enables or disables an API key.
 
     Args:
@@ -54,7 +54,7 @@ def enable_apikey(
             response.reason,
             response.text,
         )
-        return response, False
+        return str(response), False
 
     message = response.json()
     if message["status"]:
@@ -62,7 +62,7 @@ def enable_apikey(
             logging.error("%s failed with status %s",
                           "EnableApiKey" if enable else "DisableApiKey",
                           message["status"])
-            return message["status"], False
+            return str(message["status"]), False
 
         status = message["status"][0]
         if status["code"] == "OK":
@@ -71,6 +71,6 @@ def enable_apikey(
         logging.error("%s failed with status %s",
                       "EnableApiKey" if enable else "DisableApiKey",
                       status)
-        return status, False
+        return str(status), False
 
-    return message, False
+    return str(message), False

@@ -1,7 +1,7 @@
 """Example of using the Vectara REST API to delete an API Key."""
 
 import logging
-from typing import Any
+from typing import Optional
 
 import requests
 
@@ -10,7 +10,7 @@ def delete_apikey(
     customer_id: int,
     key_id: str,
     jwt_token: str,
-) -> tuple[Any, bool]:
+) -> tuple[Optional[str], bool]:
     """Deletes an API key.
 
     Args:
@@ -44,19 +44,19 @@ def delete_apikey(
             response.reason,
             response.text,
         )
-        return response, False
+        return str(response), False
 
     message = response.json()
     if message["status"]:
         if len(message["status"]) != 1:
             logging.error("DeleteApiKey failed with status %s", message["status"])
-            return message["status"], False
+            return str(message["status"]), False
 
         status = message["status"][0]
         if status["code"] == "OK":
             return None, True
 
         logging.error("DeleteApiKey failed with status %s", status)
-        return status, False
+        return str(status), False
 
-    return message, False
+    return str(message), False

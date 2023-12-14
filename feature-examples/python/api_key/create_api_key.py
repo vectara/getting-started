@@ -1,7 +1,7 @@
 """Example of using the Vectara REST API to create an API Key."""
 
 import logging
-from typing import Any
+from typing import Optional
 
 import requests
 
@@ -10,7 +10,7 @@ def create_apikey(
     customer_id: int,
     corpus_id: int,
     jwt_token: str,
-) -> tuple[Any, bool]:
+) -> tuple[Optional[str], bool]:
     """Creates an API key.
 
     Args:
@@ -52,18 +52,18 @@ def create_apikey(
             response.reason,
             response.text,
         )
-        return response, False
+        return str(response), False
 
     message = response.json()
     if message["response"]:
         if len(message["response"]) != 1:
             logging.error("CreateApiKey failed with response %s", message["response"])
-            return message["response"], False
+            return str(message["response"]), False
 
         status = message["response"][0]["status"]
         if status["code"] == "OK":
             return message["response"][0]["keyId"], True
         logging.error("CreateApiKey failed with status %s", status)
-        return status, False
+        return str(status), False
 
-    return message, False
+    return str(message), False
