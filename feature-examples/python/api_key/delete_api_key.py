@@ -26,7 +26,7 @@ def delete_apikey(
         "Authorization": f"Bearer {jwt_token}",
     }
 
-    # A request can contain multiple api keys. We are deleting only one.
+    # A request can contain multiple API keys. We are deleting only one.
     request = {"keyId": [key_id]}
 
     response = requests.post(

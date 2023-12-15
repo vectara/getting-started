@@ -1,7 +1,6 @@
 """Example of using the Vectara REST API to create an API Key."""
 
 import logging
-from typing import Optional
 
 import requests
 
@@ -10,7 +9,7 @@ def create_apikey(
     customer_id: int,
     corpus_id: int,
     jwt_token: str,
-) -> tuple[Optional[str], bool]:
+) -> tuple[str, bool]:
     """Creates an API key.
 
     Args:

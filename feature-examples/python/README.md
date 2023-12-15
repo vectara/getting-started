@@ -1,6 +1,6 @@
 # Feature Examples
 
-This directory contains examples on how to use different features such as Api Key, Manage User etc. 
+This directory contains examples on how to use different features such as API Key, Manage User etc. 
 
 ## Running an example
 
