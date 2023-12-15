@@ -1,4 +1,5 @@
 """Main file for Vectara feature examples related to API Key."""
+
 import argparse
 import logging
 import sys
@@ -50,25 +51,28 @@ def main() -> None:
 
     response = Optional[str]
 
-    # response, status = create_api_key.create_apikey(
-    #     args.customer_id, args.corpus_id, jwt_token
-    # )
-    # logging.info("CreateApiKey response: %s, status: %s", response, status)
+    response, status = create_api_key.create_apikey(
+        args.customer_id, args.corpus_id, jwt_token
+    )
+    logging.info("CreateApiKey response: %s, status: %s", response, status)
 
-    # if not status:
-    #     sys.exit(1)
+    if not status:
+        sys.exit(1)
 
-    # api_key = response
-    response, status = list_api_key.list_apikeys(args.customer_id, jwt_token)
-    logging.info("ListApiKeys response: %s, status: %s", response, status)
+    api_key: str = response
+    response, status = enable_api_key.enable_apikey(
+        args.customer_id, api_key, jwt_token, False  # Disable the API key.
+    )
+    logging.info("DisableApiKey response: %s, status: %s", response, status)
 
-    # response, status = enable_api_key.enable_apikey(
-    #     args.customer_id, api_key, jwt_token, False  # Disable the API key.
-    # )
-    # logging.info("DisableApiKey response: %s, status: %s", response, status)
+    response, status = delete_api_key.delete_apikey(args.customer_id, api_key, jwt_token)
+    logging.info("DeleteApiKey response: %s, status: %s", response, status)
 
-    # response, status = delete_api_key.delete_apikey(args.customer_id, api_key, jwt_token)
-    # logging.info("DeleteApiKey response: %s, status: %s", response, status)
+    try:
+        keys = list_api_key.list_apikeys(args.customer_id, jwt_token)
+        logging.info("ListApiKeys response: %s", keys)
+    except Exception as e:
+        logging.error("ListApiKeys failed with exception %s", e)
 
 
 if __name__ == "__main__":

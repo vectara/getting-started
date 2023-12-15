@@ -1,23 +1,22 @@
 """Example of using the Vectara REST API to list the API Keys."""
 
-from dataclasses import dataclass
+import dataclasses
 import logging
-from typing import Union
 
 import requests
 
 
-@dataclass
+@dataclasses.dataclass(frozen=True)
 class CorpusData:
-    """CorpusData class."""
+    """Corpus id and name."""
 
     corpus_id: int
     corpus_name: str
 
 
-@dataclass
+@dataclasses.dataclass(frozen=True)
 class KeyData:
-    """KeyData class."""
+    """API Key data such as id, type, list of corpora etc."""
 
     key_id: str
     description: str
@@ -29,7 +28,7 @@ class KeyData:
 def list_apikeys(
     customer_id: int,
     jwt_token: str,
-) -> tuple[Union[list[KeyData], str], bool]:
+) -> list[KeyData]:
     """Retrieves the list of API keys.
 
     Args:
@@ -61,7 +60,7 @@ def list_apikeys(
             response.reason,
             response.text,
         )
-        return str(response), False
+        raise Exception(str(response))
 
     message = response.json()
     if message["status"]:
@@ -83,9 +82,9 @@ def list_apikeys(
                         ],
                     )
                 )
-            return result, True
+            return result
 
         logging.error("ListApiKeys failed with status %s", status)
-        return str(status), False
+        raise Exception(str(status))
 
-    return str(message), False
+    raise Exception(str(message))
