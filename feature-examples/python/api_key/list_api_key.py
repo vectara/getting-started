@@ -24,6 +24,9 @@ class KeyData:
     enabled: bool
     corpora: list[CorpusData]
 
+class ListApiKeyException(Exception):
+    """Base class for exceptions in this module."""
+
 
 def list_api_keys(
     customer_id: int,
@@ -88,6 +91,6 @@ def list_api_keys(
             return result
 
         logging.error("ListApiKeys failed with status %s", status)
-        raise Exception(str(status))
+        raise ListApiKeyException(str(status))
 
     raise Exception(str(message))
