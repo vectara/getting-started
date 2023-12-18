@@ -6,7 +6,7 @@ from typing import Optional
 import requests
 
 
-def enable_apikey(
+def enable_api_key(
     customer_id: int,
     key_id: str,
     jwt_token: str,

@@ -25,7 +25,7 @@ class KeyData:
     corpora: list[CorpusData]
 
 
-def list_apikeys(
+def list_api_keys(
     customer_id: int,
     jwt_token: str,
 ) -> list[KeyData]:
@@ -36,7 +36,10 @@ def list_apikeys(
         jwt_token: JWT token to be used for authentication.
 
     Returns:
-        (message, True) in case of success and returns (status, False) in case of failure.
+        list of KeyData objects.
+
+    Raises:
+        Exception: In case of any error.
     """
     post_headers = {
         "customer-id": f"{customer_id}",

@@ -5,7 +5,7 @@ import logging
 import requests
 
 
-def create_apikey(
+def create_api_key(
     customer_id: int,
     corpus_id: int,
     jwt_token: str,

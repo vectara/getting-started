@@ -6,7 +6,7 @@ from typing import Optional
 import requests
 
 
-def delete_apikey(
+def delete_api_key(
     customer_id: int,
     key_id: str,
     jwt_token: str,
