@@ -3,6 +3,7 @@ package com.vectara.examples.grpc;
 import com.beust.jcommander.Parameter;
 import com.google.common.base.Strings;
 import com.vectara.QueryServiceGrpc.QueryServiceBlockingStub;
+import com.vectara.StatusProtos.StatusCode;
 import com.vectara.serving.ServingProtos.BatchQueryRequest;
 import com.vectara.serving.ServingProtos.BatchQueryResponse;
 import com.vectara.serving.ServingProtos.CorpusKey;
@@ -11,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import com.vectara.auth.VectaraCallCredentials;
 import com.vectara.auth.VectaraCallCredentials.AuthType;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyChannelBuilder;
 import java.io.File;
@@ -99,6 +101,20 @@ public class GrpcApiKeyQueries {
       LOGGER.log(Level.SEVERE, "Querying failed. Please see previous logs for details.");
       System.exit(1);
     }
+    for (var status : response.getStatusList()) {
+      if (status.getCode() != StatusCode.OK) {
+        LOGGER.severe("Failure status on query: " + status);
+        System.exit(1);
+      }
+    }
+    for (var responseSet : response.getResponseSetList()) {
+      for (var status : responseSet.getStatusList()) {
+        if (status.getCode() != StatusCode.OK) {
+          LOGGER.severe("Failure querying corpus: " + status);
+          System.exit(1);
+        }
+      }
+    }
     LOGGER.info(String.format("Querying response: %s", response.toString()));
   }
 
@@ -145,7 +161,7 @@ public class GrpcApiKeyQueries {
               new VectaraCallCredentials(AuthType.API_KEY, apiKey, customerId, corpusId))
           .query(builder.build());
 
-    } catch (SSLException e) {
+    } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while querying data: %s", e));
       return null;
     } finally {

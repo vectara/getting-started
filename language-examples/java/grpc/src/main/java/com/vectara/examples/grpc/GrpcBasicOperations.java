@@ -12,9 +12,12 @@ import com.vectara.QueryServiceGrpc;
 import com.vectara.QueryServiceGrpc.QueryServiceBlockingStub;
 import com.vectara.ServiceProtos.IndexDocumentRequest;
 import com.vectara.ServiceProtos.IndexDocumentResponse;
+import com.vectara.StatusProtos.StatusCode;
 import com.vectara.admin.AdminProtos.Corpus;
 import com.vectara.admin.AdminProtos.CreateCorpusRequest;
 import com.vectara.admin.AdminProtos.CreateCorpusResponse;
+import com.vectara.admin.AdminProtos.DeleteCorpusRequest;
+import com.vectara.admin.AdminProtos.DeleteCorpusResponse;
 import com.vectara.indexing.IndexingProtos.Document;
 import com.vectara.indexing.IndexingProtos.Section;
 import com.vectara.serving.ServingProtos.BatchQueryRequest;
@@ -39,7 +42,7 @@ import javax.net.ssl.SSLException;
 
 /**
  * A class that demonstrates how different Vectara APIs such as Indexing, Serving and Admin can be
- * called using gRPC and OAuth (for authentication)
+ * called using gRPC and OAuth (for authentication).
  */
 public class GrpcBasicOperations {
   private static final Logger LOGGER = Logger.getLogger(GrpcBasicOperations.class.getName());
@@ -92,10 +95,16 @@ public class GrpcBasicOperations {
       LOGGER.log(Level.SEVERE, "Querying failed. Please see previous logs for details.");
       System.exit(1);
     }
-    result = createCorpus(jwtToken, args.adminEndpoint, "VectaraDemo", args.customerId);
-    if (!result) {
+
+    long demoCorpusId = createCorpus(jwtToken, args.adminEndpoint, "VectaraDemo", args.customerId);
+    if (demoCorpusId < 0) {
       LOGGER.log(Level.SEVERE, "Create Corpus failed. Please see previous logs for details.");
       System.exit(1);
+    }
+    LOGGER.info("Deleting demo corpus " + demoCorpusId);
+    result = deleteCorpus(jwtToken, args.adminEndpoint, demoCorpusId, args.customerId);
+    if (!result) {
+      LOGGER.severe("Corpus deletion failed. Please see previous logs for details.");
     }
   }
 
@@ -118,8 +127,8 @@ public class GrpcBasicOperations {
         return null;
       }
       return jwtToken;
-    } catch (URISyntaxException e) {
-      LOGGER.log(Level.SEVERE, "Could not obtain client credentials.");
+    } catch (URISyntaxException | RuntimeException e) {
+      LOGGER.log(Level.SEVERE, "Could not obtain client credential: " + e);
       return null;
     }
   }
@@ -200,14 +209,23 @@ public class GrpcBasicOperations {
       channel = managedChannel(indexingUrl);
       IndexServiceBlockingStub indexing =
           IndexServiceGrpc.newBlockingStub(channel);
+      var indexingRequest = getGettysburgAddress(customerId, corpusId);
+      LOGGER.info("Indexing " + indexingRequest.getDocument().getDocumentId() + " in corpus " + corpusId);
       IndexDocumentResponse response =
           indexing
               .withCallCredentials(new VectaraCallCredentials(AuthType.OAUTH_TOKEN,
                                                               jwtToken,
                                                               customerId,
                                                               corpusId))
-              .index(getGettysburgAddress(customerId, corpusId));
-      LOGGER.info(String.format("Indexing response: %s", response.toString()));
+              .index(indexingRequest);
+      switch (response.getStatus().getCode()) {
+        case OK -> LOGGER.info("Indexing succeeded");
+        case ALREADY_EXISTS -> LOGGER.info("Document was previously indexed");
+        default -> {
+          LOGGER.severe("Indexing failed: " + response);
+          return false;
+        }
+      }
       return true;
     } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while indexing data: %s", e));
@@ -250,7 +268,7 @@ public class GrpcBasicOperations {
                                                               customerId,
                                                               corpusId))
               .delete(request);
-      LOGGER.info(String.format("Delete document response: %s", response.toString()));
+      LOGGER.info("Document deletion request submitted for " + documentId + " in corpus " + corpusId);
       return true;
     } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while deleting document: %s", e));
@@ -298,10 +316,24 @@ public class GrpcBasicOperations {
                                                               customerId,
                                                               corpusId))
               .query(builder.build());
+      for (var status : response.getStatusList()) {
+        if (status.getCode() != StatusCode.OK) {
+          LOGGER.severe("Failure status on query: " + status);
+          return false;
+        }
+      }
+      for (var responseSet : response.getResponseSetList()) {
+        for (var status : responseSet.getStatusList()) {
+          if (status.getCode() != StatusCode.OK) {
+            LOGGER.severe("Failure querying corpus: " + status);
+            return false;
+          }
+        }
+      }
       LOGGER.info(
           String.format("Query <%s> response:\n%s", query, response.toString()));
       return true;
-    } catch (SSLException e) {
+    } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while querying data: %s", e));
       return false;
     } finally {
@@ -318,9 +350,9 @@ public class GrpcBasicOperations {
    * @param adminUrl Admin URL at which gRPC endpoints are available.
    * @param corpusName The name of the corpus to be created.
    * @param customerId The unique customer ID in Vectara platform.
-   * @return success or failure.
+   * @return The ID of the new corpus, or -1 on failure.
    */
-  public static boolean createCorpus(
+  public static long createCorpus(
       String jwtToken, String adminUrl, String corpusName, long customerId) {
     ManagedChannel channel = null;
     try {
@@ -339,10 +371,55 @@ public class GrpcBasicOperations {
                                                               jwtToken,
                                                               customerId))
               .createCorpus(builder.build());
-      LOGGER.info(String.format("Create Corpus response: %s", response.toString()));
-      return true;
-    } catch (SSLException e) {
+      if (response.getStatus().getCode() != StatusCode.OK) {
+        LOGGER.severe("Corpus creation failed for " + corpusName + ": " + response.getStatus());
+        return -1;
+      }
+      LOGGER.info("Corpus " + corpusName + " created with id " + response.getCorpusId());
+      return Integer.toUnsignedLong(response.getCorpusId());
+    } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while creating a corpus: %s", e));
+      return -1;
+    } finally {
+      if (channel != null) {
+        channel.shutdown();
+      }
+    }
+  }
+
+  /**
+   * Deletes a corpus.
+   *
+   * @param jwtToken A valid JWT token.
+   * @param adminUrl Admin URL at which gRPC endpoints are available.
+   * @param corpusId The id of the corpus to be deleted.
+   * @param customerId The unique customer ID in Vectara platform.
+   * @return success or failure.
+   */
+  public static boolean deleteCorpus(
+      String jwtToken, String adminUrl, long corpusId, long customerId) {
+    ManagedChannel channel = null;
+    try {
+      channel = managedChannel(adminUrl);
+      AdminServiceBlockingStub admin = AdminServiceGrpc.newBlockingStub(channel);
+      DeleteCorpusRequest.Builder builder = DeleteCorpusRequest.newBuilder()
+          .setCorpusId((int) corpusId)
+          .setCustomerId((int) customerId);
+
+      DeleteCorpusResponse response =
+          admin
+              .withCallCredentials(new VectaraCallCredentials(AuthType.OAUTH_TOKEN,
+                                                              jwtToken,
+                                                              customerId))
+              .deleteCorpus(builder.build());
+      if (response.getStatus().getCode() != StatusCode.OK) {
+        LOGGER.severe("Corpus deletion failed for corpus " + corpusId + ": " + response.getStatus());
+        return false;
+      }
+      LOGGER.info("Corpus " + corpusId + " deleted");
+      return true;
+    } catch (SSLException | StatusRuntimeException e) {
+      LOGGER.log(Level.SEVERE, String.format("Error while deleting a corpus: %s", e));
       return false;
     } finally {
       if (channel != null) {
