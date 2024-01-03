@@ -316,23 +316,24 @@ public class GrpcBasicOperations {
                                                               customerId,
                                                               corpusId))
               .query(builder.build());
+      boolean queryFailure = false;
       for (var status : response.getStatusList()) {
         if (status.getCode() != StatusCode.OK) {
-          LOGGER.severe("Failure status on query: " + status);
-          return false;
+          LOGGER.warning("Failure status on query: " + status);
+          queryFailure = true;
         }
       }
       for (var responseSet : response.getResponseSetList()) {
         for (var status : responseSet.getStatusList()) {
           if (status.getCode() != StatusCode.OK) {
-            LOGGER.severe("Failure querying corpus: " + status);
-            return false;
+            LOGGER.warning("Failure querying corpus: " + status);
+            queryFailure = true;
           }
         }
       }
       LOGGER.info(
           String.format("Query <%s> response:\n%s", query, response.toString()));
-      return true;
+      return !queryFailure;
     } catch (SSLException | StatusRuntimeException e) {
       LOGGER.log(Level.SEVERE, String.format("Error while querying data: %s", e));
       return false;

@@ -103,15 +103,13 @@ public class GrpcApiKeyQueries {
     }
     for (var status : response.getStatusList()) {
       if (status.getCode() != StatusCode.OK) {
-        LOGGER.severe("Failure status on query: " + status);
-        System.exit(1);
+        LOGGER.warning("Failure status on query: " + status);
       }
     }
     for (var responseSet : response.getResponseSetList()) {
       for (var status : responseSet.getStatusList()) {
         if (status.getCode() != StatusCode.OK) {
-          LOGGER.severe("Failure querying corpus: " + status);
-          System.exit(1);
+          LOGGER.warning("Failure querying corpus: " + status);
         }
       }
     }
