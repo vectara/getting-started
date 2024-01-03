@@ -46,13 +46,13 @@ def main() -> None:
     logging.info("ListUsers response: %s", users)
 
     user_id: int = create_user.create_user(args.customer_id, jwt_token)
-    logging.info("CreateUser response: %d", user_id)
+    logging.info("CreateUser created user id: %d", user_id)
 
-    result = disable_user.disable_user(args.customer_id, user_id, jwt_token)
-    logging.info("DisableUser response: %s", result)
+    disable_user.disable_user(args.customer_id, user_id, jwt_token)
+    logging.info("DisableUser disabled user id: %d", user_id)
 
-    result = delete_user.delete_user(args.customer_id, user_id, jwt_token)
-    logging.info("DeleteUser response: %s", result)
+    delete_user.delete_user(args.customer_id, user_id, jwt_token)
+    logging.info("DeleteUser deleted user id: %d", user_id)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import logging
 
 import requests
 
-from utils import error_handling
+from user import exceptions
 
 
 def create_user(
@@ -35,12 +35,12 @@ def create_user(
                 "user": {
                     "handle": "testUser1",
                     "email": "testUser1@test.com",
-                    "type": 1,
+                    "type": "USER_TYPE__USER",
                     "role": [
-                        2
-                    ],  # 1 - Owner 2 - Admin, 3 - Billing Admin, 4 - Corpus Admin.
+                        "CustomerRole_Admin"
+                    ],
                 },
-                "userActionType": 1,  # 1 for create.
+                "userActionType": "USER_ACTION_TYPE__ADD",
             }
         ]
     }
@@ -55,24 +55,24 @@ def create_user(
 
     if response.status_code != 200:
         logging.error(
-            "CreateUser failed with code %d, reason %s, text %s",
+            "CreateUser failed with code %d, reason: %s, text: %s",
             response.status_code,
             response.reason,
             response.text,
         )
-        raise error_handling.UserException(str(response))
+        raise exceptions.UserException(str(response))
 
     message = response.json()
     if message["response"]:
         if len(message["response"]) != 1:
             logging.error("CreateUser failed with response %s", message["response"])
-            raise error_handling.UserException(str(message))
+            raise exceptions.UserException(str(message))
 
         status = message["response"][0]["status"]
         if status["code"] == "OK":
             return message["response"][0]["user"]["id"]
 
         logging.error("CreateUser failed with status %s", status)
-        raise error_handling.UserException(str(status))
+        raise exceptions.UserException(str(status))
 
-    raise error_handling.UserException(str(message))
+    raise exceptions.UserException(str(message))

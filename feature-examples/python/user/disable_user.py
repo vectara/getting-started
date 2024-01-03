@@ -4,14 +4,14 @@ import logging
 
 import requests
 
-from utils import error_handling
+from user import exceptions
 
 
 def disable_user(
     customer_id: int,
     user_id: int,
     jwt_token: str,
-) -> bool:
+) -> None:
     """Disables a User.
 
     Args:
@@ -20,7 +20,7 @@ def disable_user(
         jwt_token: JWT token to be used for authentication.
 
     Returns:
-        True/False indicating Success or Failure.
+        None.
 
     Raises:
         UserException: In case of any error.
@@ -37,7 +37,7 @@ def disable_user(
                 "user": {
                     "id": user_id,  # ID of the user to be disabled.
                 },
-                "userActionType": 3,  # 3 for disable, 4 for enable.
+                "userActionType": "USER_ACTION_TYPE__DISABLE"
             }
         ]
     }
@@ -52,24 +52,24 @@ def disable_user(
 
     if response.status_code != 200:
         logging.error(
-            "Disable failed with code %d, reason %s, text %s",
+            "Disable failed with code %d, reason: %s, text: %s",
             response.status_code,
             response.reason,
             response.text,
         )
-        raise error_handling.UserException(str(response))
+        raise exceptions.UserException(str(response))
 
     message = response.json()
     if message["response"]:
         if len(message["response"]) != 1:
             logging.error("DisableUser failed with response %s", message["response"])
-            raise error_handling.UserException(str(message))
+            raise exceptions.UserException(str(message))
 
         status = message["response"][0]["status"]
         if status["code"] == "OK":
-            return True
+            return
 
         logging.error("DisableUser failed with status %s", status)
-        raise error_handling.UserException(str(status))
+        raise exceptions.UserException(str(status))
 
-    raise error_handling.UserException(str(message))
+    raise exceptions.UserException(str(message))
