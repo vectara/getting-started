@@ -5,7 +5,7 @@ import logging
 
 import requests
 
-from utils import error_handling
+from user import exceptions
 
 
 @dataclasses.dataclass(frozen=True)
@@ -17,7 +17,7 @@ class UserData:
     email: str
     type: str
     comment: str
-    status: bool
+    status: str
 
 
 def _users_from_message(message: dict) -> list[UserData]:
@@ -59,7 +59,7 @@ def list_users(
     }
 
     # ListUsersType: 2 - Users with customer-level authorization, 3 - All users
-    request = {"listUsersType": 3, "numResults": 10}
+    request = {"listUsersType": "LIST_USERS_TYPE__ALL", "numResults": 10}
 
     response = requests.post(
         "https://api.vectara.io/v1/list-users",
@@ -71,12 +71,12 @@ def list_users(
 
     if response.status_code != 200:
         logging.error(
-            "ListUsers failed with code %d, reason %s, text %s",
+            "ListUsers failed with code %d, reason: %s, text: %s",
             response.status_code,
             response.reason,
             response.text,
         )
-        raise error_handling.UserException(str(response))
+        raise exceptions.UserException(str(response))
 
     message = response.json()
     if message["status"] is None:
@@ -88,4 +88,4 @@ def list_users(
         return _users_from_message(message)
 
     logging.error("ListUsers failed with status %s", status)
-    raise error_handling.UserException(str(status))
+    raise exceptions.UserException(str(status))
