@@ -7,7 +7,6 @@ import sys
 from corpus import compute_corpus_size
 from corpus import disable_corpus
 from corpus import read_corpus
-from corpus import read_usage_metrics
 from utils import utils
 
 
@@ -58,9 +57,6 @@ def main() -> None:
 
     disable_corpus.disable_corpus(args.customer_id, args.corpus_id, jwt_token)
     logging.info("DisableCorpus corpus id: %d", args.corpus_id)
-
-    usage_data = read_usage_metrics.read_usage_metrics(args.customer_id, args.corpus_id, jwt_token)
-    logging.info("ReadUsageMetrics response: %s", usage_data)
 
 
 if __name__ == "__main__":

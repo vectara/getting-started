@@ -9,7 +9,7 @@ from corpus import exceptions
 
 @dataclasses.dataclass(frozen=True)
 class CorpusSize:
-    """Corpus Size information"""
+    """Corpus Size and timestamp when it was computed."""
 
     epoch_secs: int
     size: int

@@ -72,8 +72,9 @@ def read_corpus(
         "Authorization": f"Bearer {jwt_token}",
     }
 
+    # A request can contain multiple corpus ids, but we are only interested in one.
     request = {
-        "corpusId": [int(corpus_id)],
+        "corpusId": [corpus_id],
         "readBasicInfo": True,
         "readSize": True,
         "readApiKeys": True,
@@ -104,7 +105,6 @@ def read_corpus(
 
     corpus_info = message["corpora"][0]
     corpus = corpus_info["corpus"]
-    api_keys = corpus_info["apiKey"]
 
     return CorpusInfo(
         corpus=Corpus(
@@ -127,7 +127,7 @@ def read_corpus(
                 key_type=api_key["keyType"],
                 enabled=api_key["enabled"],
             )
-            for api_key in api_keys
+            for api_key in corpus_info["apiKey"]
         ],
         api_keys_status=corpus_info["apiKeyStatus"],
     )
