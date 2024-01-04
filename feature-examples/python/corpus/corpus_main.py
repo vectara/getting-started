@@ -56,8 +56,8 @@ def main() -> None:
                                                           jwt_token)
     logging.info("ComputeCorpusSize response: %s", corpus_size)
 
-    disabled = disable_corpus.disable_corpus(args.customer_id, args.corpus_id, jwt_token)
-    logging.info("DisableCorpus response: %s", disabled)
+    disable_corpus.disable_corpus(args.customer_id, args.corpus_id, jwt_token)
+    logging.info("DisableCorpus corpus id: %d", args.corpus_id)
 
     usage_data = read_usage_metrics.read_usage_metrics(args.customer_id, args.corpus_id, jwt_token)
     logging.info("ReadUsageMetrics response: %s", usage_data)

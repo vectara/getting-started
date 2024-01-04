@@ -5,7 +5,7 @@ import logging
 
 import requests
 
-from utils import error_handling
+from corpus import exceptions
 
 
 @dataclasses.dataclass(frozen=True)
@@ -91,16 +91,16 @@ def read_corpus(
 
     if response.status_code != 200:
         logging.error(
-            "ReadCorpus failed with code %d, reason %s, text %s",
+            "ReadCorpus failed with code %d, reason: %s, text: %s",
             response.status_code,
             response.reason,
             response.text,
         )
-        raise error_handling.CorpusException(str(response))
+        raise exceptions.CorpusException(str(response))
 
     message = response.json()
     if message["corpora"] is None or len(message["corpora"]) == 0:
-        raise error_handling.CorpusException("Corpus not found")
+        raise exceptions.CorpusException("Corpus not found")
 
     corpus_info = message["corpora"][0]
     corpus = corpus_info["corpus"]

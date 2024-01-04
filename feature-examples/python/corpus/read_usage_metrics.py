@@ -5,7 +5,7 @@ import logging
 
 import requests
 
-from utils import error_handling
+from corpus import exceptions
 
 
 @dataclasses.dataclass(frozen=True)
@@ -48,7 +48,7 @@ def read_usage_metrics(
                 "end": "2024-01-02T11:45:00.00Z",
             }
         },
-        "type": 2,  # 1 = Indexing, 2 = Serving
+        "type": "METRICTYPE__SERVING",
         "interval": "PT1H",  # 1 Hour
     }
 
@@ -62,17 +62,17 @@ def read_usage_metrics(
 
     if response.status_code != 200:
         logging.error(
-            "ReadUsageMetrics failed with code %d, reason %s, text %s",
+            "ReadUsageMetrics failed with code %d, reason: %s, text: %s",
             response.status_code,
             response.reason,
             response.text,
         )
-        raise error_handling.CorpusException(str(response))
+        raise exceptions.CorpusException(str(response))
 
     message = response.json()
     if message["status"]:
         if message["status"]["code"] != "OK":
-            raise error_handling.CorpusException(str(message["status"]))
+            raise exceptions.CorpusException(str(message["status"]))
 
         return [
             QueryUsageData(
@@ -83,4 +83,4 @@ def read_usage_metrics(
             for usage in message["values"]
         ]
 
-    raise error_handling.CorpusException(str(message))
+    raise exceptions.CorpusException(str(message))

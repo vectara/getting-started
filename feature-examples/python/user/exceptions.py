@@ -3,7 +3,3 @@
 
 class UserException(Exception):
     """Base class for exceptions related to user module."""
-
-
-class CorpusException(Exception):
-    """Base class for exceptions related to corpus module."""

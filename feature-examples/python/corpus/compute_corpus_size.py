@@ -5,7 +5,7 @@ import logging
 
 import requests
 
-from utils import error_handling
+from corpus import exceptions
 
 @dataclasses.dataclass(frozen=True)
 class CorpusSize:
@@ -55,15 +55,15 @@ def compute_corpus_size(
             response.reason,
             response.text,
         )
-        raise error_handling.CorpusException(str(response))
+        raise exceptions.CorpusException(str(response))
 
     message = response.json()
     if message["status"]:
         if message["status"]["code"] != "OK":
-            raise error_handling.CorpusException(str(message["status"]))
+            raise exceptions.CorpusException(str(message["status"]))
         return CorpusSize(
             epoch_secs=message["size"]["epochSecs"],
             size=message["size"]["size"]
         )
 
-    raise error_handling.CorpusException(str(message))
+    raise exceptions.CorpusException(str(message))

@@ -4,14 +4,14 @@ import logging
 
 import requests
 
-from utils import error_handling
+from corpus import exceptions
 
 
 def disable_corpus(
     customer_id: int,
     corpus_id: int,
     jwt_token: str,
-) -> bool:
+) -> None:
     """Disables a Corpus.
 
     Args:
@@ -20,7 +20,7 @@ def disable_corpus(
         jwt_token: JWT token to be used for authentication.
 
     Returns:
-        True/False indicating Success or Failure.
+        None.
 
     Raises:
         CorpusException: In case of any error.
@@ -47,14 +47,13 @@ def disable_corpus(
             response.reason,
             response.text,
         )
-        raise error_handling.CorpusException(str(response))
+        raise exceptions.CorpusException(str(response))
 
     message = response.json()
     if message["status"]:
-        if message["status"]["code"] == "OK":
-            return True
+        if message["status"]["code"] != "OK":
+            raise exceptions.CorpusException(str(message["status"]))
 
-        logging.error("DisableCorpus failed with status %s", message["status"])
-        return False
+        return
 
-    raise error_handling.CorpusException(str(message))
+    raise exceptions.CorpusException(str(message))
