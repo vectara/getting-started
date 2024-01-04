@@ -58,7 +58,6 @@ def list_users(
         "Authorization": f"Bearer {jwt_token}",
     }
 
-    # ListUsersType: 2 - Users with customer-level authorization, 3 - All users
     request = {"listUsersType": "LIST_USERS_TYPE__ALL", "numResults": 10}
 
     response = requests.post(
