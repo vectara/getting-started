@@ -240,13 +240,10 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function getJwtToken(auth_url, client_id, client_secret) {
-  const url = `${auth_url}/oauth2/token`;
-  const encoded = Buffer.from(`${client_id}:${client_secret}`).toString(
-    "base64"
-  );
+  const url = auth_url?.endsWith('/oauth2/token') ? auth_url : `${auth_url}/oauth2/token`;
   const config = {
     headers: {
-      Authorization: `Basic ${encoded}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
   };
 
@@ -256,7 +253,8 @@ function getJwtToken(auth_url, client_id, client_secret) {
         url,
         new URLSearchParams({
           grant_type: "client_credentials",
-          client_id: client_id,
+          client_id,
+          client_secret
         }),
         config
       )
