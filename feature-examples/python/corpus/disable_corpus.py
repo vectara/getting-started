@@ -19,9 +19,6 @@ def disable_corpus(
         corpus_id: ID of the corpus to be disabled.
         jwt_token: JWT token to be used for authentication.
 
-    Returns:
-        None.
-
     Raises:
         CorpusException: In case of any error.
     """
@@ -30,7 +27,7 @@ def disable_corpus(
         "Authorization": f"Bearer {jwt_token}",
     }
 
-    request = { "corpusId": corpus_id, "enable": False }
+    request = {"corpusId": corpus_id, "enable": False}
 
     response = requests.post(
         "https://api.vectara.io/v1/update-corpus-enablement",

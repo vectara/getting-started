@@ -1,59 +1,18 @@
 """Example of using the Vectara REST API to read the corpus info."""
 
-import dataclasses
 import logging
 
 import requests
 
+from corpus import data_objects
 from corpus import exceptions
-
-
-@dataclasses.dataclass(frozen=True)
-class Corpus:
-    """Basic Corpus data."""
-
-    corpus_id: int
-    name: str
-    description: str
-    dt_provisioned: str
-    enabled: bool
-
-
-@dataclasses.dataclass(frozen=True)
-class CorpusSize:
-    """Corpus Size information"""
-
-    epoch_secs: int
-    size: int
-
-
-@dataclasses.dataclass(frozen=True)
-class ApiKey:
-    """API Key information"""
-
-    api_key: str
-    description: str
-    key_type: str
-    enabled: bool
-
-
-@dataclasses.dataclass(frozen=True)
-class CorpusInfo:
-    """All corpus data such as id, name, size, associated api keys etc."""
-
-    corpus: Corpus
-    status: str
-    size: CorpusSize
-    size_status: str
-    api_keys: list[ApiKey]
-    api_keys_status: str
 
 
 def read_corpus(
     customer_id: int,
     corpus_id: int,
     jwt_token: str,
-) -> CorpusInfo:
+) -> data_objects.CorpusInfo:
     """Retrieves the Corpus information.
 
     Args:
@@ -62,7 +21,7 @@ def read_corpus(
         jwt_token: JWT token to be used for authentication.
 
     Returns:
-        CorpusInfo objects.
+        CorpusInfo object.
 
     Raises:
         CorpusException: In case of any error.
@@ -106,8 +65,8 @@ def read_corpus(
     corpus_info = message["corpora"][0]
     corpus = corpus_info["corpus"]
 
-    return CorpusInfo(
-        corpus=Corpus(
+    return data_objects.CorpusInfo(
+        corpus=data_objects.Corpus(
             corpus_id=corpus["id"],
             name=corpus["name"],
             description=corpus["description"],
@@ -115,13 +74,13 @@ def read_corpus(
             enabled=corpus["enabled"],
         ),
         status=corpus_info["corpusStatus"],
-        size=CorpusSize(
+        size=data_objects.CorpusSize(
             epoch_secs=corpus_info["size"]["epochSecs"],
             size=corpus_info["size"]["size"],
         ),
         size_status=corpus_info["sizeStatus"],
         api_keys=[
-            ApiKey(
+            data_objects.ApiKey(
                 api_key=api_key["id"],
                 description=api_key["description"],
                 key_type=api_key["keyType"],
