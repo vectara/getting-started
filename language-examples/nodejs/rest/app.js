@@ -240,7 +240,9 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function getJwtToken(auth_url, client_id, client_secret) {
-  const url = auth_url?.endsWith('/oauth2/token') ? auth_url : `${auth_url}/oauth2/token`;
+  const URL_SUFFIX = '/oauth2/token';
+  const sanitized_url = auth_url.replace(/\/+$/, ''); // remove trailing slashes
+  const url = sanitized_url.endsWith(URL_SUFFIX) ? sanitized_url : `${sanitized_url}${URL_SUFFIX}`;
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
