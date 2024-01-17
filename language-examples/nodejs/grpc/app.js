@@ -16,6 +16,14 @@ const axios = require("axios");
 const path = require("path");
 
 let PROTO_PATHS = [
+  path.join(
+    __dirname,
+    "../../../protos/protoc-gen-openapiv2/options/openapiv2.proto"
+  ),
+  path.join(
+    __dirname,
+    "../../../protos/protoc-gen-openapiv2/options/annotations.proto"
+  ),
   path.join(__dirname, "../../../protos/admin.proto"),
   path.join(__dirname, "../../../protos/common.proto"),
   path.join(__dirname, "../../../protos/custom_dim.proto"),
@@ -215,13 +223,14 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function getJwtToken(auth_url, client_id, client_secret) {
-  const url = `${auth_url}/oauth2/token`;
-  const encoded = Buffer.from(`${client_id}:${client_secret}`).toString(
-    "base64"
-  );
+  const URL_SUFFIX = "/oauth2/token";
+  const sanitized_url = auth_url.replace(/\/+$/, ""); // remove trailing slashes
+  const url = sanitized_url.endsWith(URL_SUFFIX)
+    ? sanitized_url
+    : `${sanitized_url}${URL_SUFFIX}`;
   const config = {
     headers: {
-      Authorization: `Basic ${encoded}`,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
   };
 
@@ -231,7 +240,8 @@ function getJwtToken(auth_url, client_id, client_secret) {
         url,
         new URLSearchParams({
           grant_type: "client_credentials",
-          client_id: client_id,
+          client_id,
+          client_secret,
         }),
         config
       )
