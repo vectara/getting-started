@@ -7,9 +7,9 @@ class RestDeleteCorpus
     /// </summary>
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusId"> The unique ID of the corpus to be deleted. </param>
-    /// <param name="adminEndpoint"> Admin API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
-    public static void DeleteCorpus(long customerId, long corpusId, string adminEndpoint, string jwtToken)
+    /// <throws> Exception if Delete operation fails. </throws>
+    public static void DeleteCorpus(long customerId, long corpusId, string jwtToken)
     {
         using (var client = new HttpClient())
         {
@@ -17,13 +17,15 @@ class RestDeleteCorpus
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{adminEndpoint}/v1/delete-corpus"),
+                    RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/delete-corpus"),
                     Method = HttpMethod.Post,
                 };
 
-                Dictionary<String, Object> data = new();
-                data.Add("customer_id", customerId);
-                data.Add("corpus_id", corpusId);
+                Dictionary<string, object> data = new()
+                {
+                    { "customer_id", customerId },
+                    { "corpus_id", corpusId }
+                };
 
                 string jsonData = JsonSerializer.Serialize(data);
 
@@ -35,14 +37,13 @@ class RestDeleteCorpus
                 request.Headers.Add("customer-id", customerId.ToString());
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 Console.WriteLine(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }

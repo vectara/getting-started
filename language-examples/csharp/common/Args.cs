@@ -15,18 +15,6 @@ namespace VectaraExampleCommon
                 Required = true,
                 HelpText = "Corpus ID to which data will be indexed and queried from.")]
         public long CorpusId { get; set; } = 123;
-        [Option("admin-endpoint",
-                Required = false,
-                HelpText = "The endpoint of the admin server.")]
-        public String AdminEndpoint { get; set; } = "admin.vectara.io";
-        [Option("indexing-endpoint",
-                Required = false,
-                HelpText = "The endpoint of the indexing server.")]
-        public String IndexingEndpoint { get; set; } = "indexing.vectara.io";
-        [Option("serving-endpoint",
-                Required = false,
-                HelpText = "The endpoint of the querying server.")]
-        public String ServingEndpoint { get; set; } = "serving.vectara.io";
         [Option("app-client-id",
                 Required = false,
                 HelpText = "This appclient should have permissions for all operations in this example. "

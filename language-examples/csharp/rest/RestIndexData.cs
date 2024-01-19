@@ -7,7 +7,7 @@ using System.Text.Json;
 
 class RestIndexData
 {
-    private static Stream ReadFileFromResource(String dir, String fileName)
+    private static Stream ReadFileFromResource(string dir, string fileName)
     {
         var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
         return embeddedProvider.GetFileInfo($"{dir}/{fileName}").CreateReadStream();
@@ -42,9 +42,10 @@ class RestIndexData
     /// </summary>
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
-    /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
-    public static void IndexViaUpload(long customerId, long corpusId, String indexingEndpoint, String jwtToken)
+    /// <returns> The name of the file that was uploaded. </returns>
+    /// <throws> Exception if Index operation fails. </throws>
+    public static string IndexViaUpload(long customerId, long corpusId, string jwtToken)
     {
         using (var client = new HttpClient())
         {
@@ -52,18 +53,18 @@ class RestIndexData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{indexingEndpoint}/v1/upload"),
+                    RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/upload"),
                     Method = HttpMethod.Post,
                 };
                 // Getting a randomly generated key that will be used as boundary in 
                 // multipart/form-data request.
-                String boundary = GetRandomKey(8);
+                string boundary = GetRandomKey(8);
                 var multipartContent = new MultipartFormDataContent(boundary);
                 multipartContent.Add(new StringContent(customerId.ToString()), name: "c");
                 multipartContent.Add(new StringContent(corpusId.ToString()), name: "o");
 
                 // File
-                String fileName = "upload.pdf";
+                string fileName = "upload.pdf";
                 var fileStreamContent = new StreamContent(ReadFileFromResource("pdf", fileName));
                 multipartContent.Add(fileStreamContent, name: "file", fileName: fileName);
                 fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
@@ -74,14 +75,14 @@ class RestIndexData
                 request.Headers.Add("Authorization", $"Bearer {jwtToken}");
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 Console.WriteLine(result);
+                return fileName;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }
@@ -91,9 +92,9 @@ class RestIndexData
     /// </summary>
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
-    /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
-    public static void Index(long customerId, long corpusId, String indexingEndpoint, String jwtToken)
+    /// <throws> Exception if Index operation fails. </throws>
+    public static void Index(long customerId, long corpusId, string jwtToken)
     {
         using (var client = new HttpClient())
         {
@@ -101,15 +102,15 @@ class RestIndexData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{indexingEndpoint}/v1/index"),
+                    RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/index"),
                     Method = HttpMethod.Post,
                 };
 
-                Dictionary<String, Object> indexData = new();
-                Dictionary<String, Object> document = new();
-                Dictionary<String, Object> section = new();
-                Dictionary<String, Object> docMetadata = new();
-                Dictionary<String, Object> sectionMetadata = new();
+                Dictionary<string, object> indexData = new();
+                Dictionary<string, object> document = new();
+                Dictionary<string, object> section = new();
+                Dictionary<string, object> docMetadata = new();
+                Dictionary<string, object> sectionMetadata = new();
 
                 sectionMetadata.Add("SectionHeader", "Aloha!");
                 section.Add("text", "Some dummy text");
@@ -138,14 +139,13 @@ class RestIndexData
                 request.Headers.Add("Authorization", $"Bearer {jwtToken}");
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 Console.WriteLine(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }

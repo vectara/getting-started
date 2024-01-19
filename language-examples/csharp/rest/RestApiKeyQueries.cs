@@ -1,4 +1,5 @@
 using CommandLine;
+using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using VectaraExampleCommon;
 
@@ -11,10 +12,18 @@ namespace VectaraExampleRest
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Args>(args)
+            _ = Parser.Default.ParseArguments<Args>(args)
                 .WithParsed<Args>((args) =>
                 {
-                    Query(args.CustomerId, args.CorpusId, "Test Query.", args.ServingEndpoint, args.ApiKey);
+                    try 
+                    {
+                        Query(args.CustomerId, args.CorpusId, "Test Query.", args.ApiKey);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine(ex.Message);
+                        return;
+                    }
                 })
                 .WithNotParsed<Args>((errs) =>
                 {
@@ -32,9 +41,9 @@ namespace VectaraExampleRest
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusId"> The corpus that needs to be queried. </param>
         /// <param name="query"> The query text. </param>
-        /// <param name="servingEndpoint"> Serving API endpoint to which calls will be directed. </param>
         /// <param name="apiKey"> A valid API Key. </param>
-        private static void Query(long customerId, long corpusId, String query, String servingEndpoint, String apiKey)
+        /// <throws> Exception if no results are found. </throws>
+        private static void Query(long customerId, long corpusId, string query, string apiKey)
         {
             using (var client = new HttpClient())
             {
@@ -42,18 +51,20 @@ namespace VectaraExampleRest
                 {
                     var request = new HttpRequestMessage
                     {
-                        RequestUri = new Uri($"https://{servingEndpoint}/v1/query"),
+                        RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/query"),
                         Method = HttpMethod.Post,
                     };
-                    Dictionary<String, Object> queryData = new();
-                    List<Object> queryList = new();
-                    List<Object> corpusList = new();
-                    corpusList.Add(new Dictionary<String, Object>()
+                    Dictionary<string, object> queryData = new();
+                    List<object> queryList = new();
+                    List<object> corpusList = new()
+                    {
+                        new Dictionary<string, object>()
                     {
                         {"customerId", customerId},
                         {"corpusId", corpusId}
-                    });
-                    queryList.Add(new Dictionary<String, Object>()
+                    }
+                    };
+                    queryList.Add(new Dictionary<string, object>()
                     {
                         {"query", query},
                         {"numResults", 10},
@@ -72,16 +83,37 @@ namespace VectaraExampleRest
                     request.Headers.Add("customer-id", customerId.ToString());
 
                     HttpResponseMessage response = client.Send(request);
-                    String result = response.Content.ReadAsStringAsync().Result;
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    JObject resultObj = JObject.Parse(result);
+                    JToken? responseSetArray = resultObj["responseSet"];
+                    if (responseSetArray == null)
+                    {
+                        throw new Exception("No results found");
+                    }
+                    foreach (var responseSet in responseSetArray)
+                    {
+                        JObject responseSetObj = JObject.Parse(responseSet.ToString());
+                        JToken? documents = responseSetObj["document"];
+
+                        foreach (JToken docSection in responseSetObj["response"])
+                        {
+                            string text = docSection["text"].ToString();
+                            double score = double.Parse(docSection["score"].ToString());
+                            // doc that this section belongs to
+                            int documentIndex = int.Parse(docSection["documentIndex"].ToString()); 
+                            JToken doc = documents.ElementAt(documentIndex);
+                            string docId = doc["id"].ToString();
+                            Console.WriteLine("[score:{0:N2}] [docId:{1}] [text:{2}]", score, docId, text);
+                        }
+                    }
 
                     Console.WriteLine(result);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Console.Error.WriteLine(ex.Message);
-                    return;
+                    throw;
                 }
             }
         }
-   }
+    }
 }
