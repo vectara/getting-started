@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 class RestCreateCorpus
 {
@@ -7,25 +8,32 @@ class RestCreateCorpus
     /// </summary>
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusName"> The name of the corpus to be created. </param>
-    /// <param name="adminEndpoint"> Admin API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
-    public static void CreateCorpus(long customerId, string corpusName, string adminEndpoint, string jwtToken)
+    /// <returns> The corpus ID of the newly created corpus. </returns>
+    /// <throws> Exception if corpus creation fails. </throws>
+    public static uint CreateCorpus(long customerId, string corpusName, string jwtToken)
     {
         using (var client = new HttpClient())
         {
             try
             {
+                var apiEndpoint = ServerEndpoints.commonEndpoint;
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{adminEndpoint}/v1/create-corpus"),
+                    RequestUri = new Uri($"https://{apiEndpoint}/v1/create-corpus"),
                     Method = HttpMethod.Post,
                 };
-                Dictionary<String, Object> corpusData = new();
-                corpusData.Add("corpus", new Dictionary<String, Object>()
+                Dictionary<string, object> corpusData = new()
+                {
+                    {
+                        "corpus",
+                        new Dictionary<string, object>()
                     {
                         {"name", corpusName},
                         {"description", "Dummy description"}
-                    });
+                    }
+                    }
+                };
 
                 string jsonData = JsonSerializer.Serialize(corpusData);
 
@@ -37,14 +45,23 @@ class RestCreateCorpus
                 request.Headers.Add("customer-id", customerId.ToString());
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
-
-                Console.WriteLine(result);
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject resultObj = JObject.Parse(result);
+                JToken? status = resultObj["status"];
+                if (status == null)
+                {
+                    throw new Exception("Corpus creation failed");
+                }
+                JToken? code = status["code"];
+                if (code == null || code.ToString() != "OK")
+                {
+                    throw new Exception(string.Format("Corpus creation failed: {0}", status["statusDetail"]));
+                }
+                return uint.Parse(resultObj["corpusId"].ToString());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }

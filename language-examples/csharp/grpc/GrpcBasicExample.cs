@@ -17,19 +17,24 @@ namespace VectaraExampleGrpc
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Args>(args)
+            _ = Parser.Default.ParseArguments<Args>(args)
                 .WithParsed<Args>((args) =>
                 {
-                    String? jwtToken = GetJwtToken(args.AuthUrl, args.AppclientId, args.AppclientSecret);
-                    if (!String.IsNullOrEmpty(jwtToken))
+                    string? jwtToken = GetJwtToken(args.AuthUrl, args.AppclientId, args.AppclientSecret);
+                    if (!string.IsNullOrEmpty(jwtToken))
                     {
-                        CreateCorpus(args.CustomerId, "Test Corpus from Dotnet", args.AdminEndpoint, jwtToken);
-                        var docId = Index(args.CustomerId, args.CorpusId, args.IndexingEndpoint, jwtToken);
-                        // It takes some time to index data in Vectara platform. It is possible that query will
-                        // return zero results immediately after indexing. Please wait 3-5 minutes and try again if
-                        // that happens.
-                        Query(args.CustomerId, args.CorpusId, "Test Query.", args.ServingEndpoint, jwtToken);
-                        DeleteDocument(args.CustomerId, args.CorpusId, args.IndexingEndpoint, jwtToken, docId);
+                        try
+                        {
+                            var corpusId = CreateCorpus(args.CustomerId, "CSharp Test", jwtToken);
+                            string docId = Index(args.CustomerId, corpusId, jwtToken);
+                            Query(args.CustomerId, corpusId, "Test Query.", jwtToken);
+                            DeleteDocument(args.CustomerId, corpusId, jwtToken, docId);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.Error.WriteLine(ex.Message);
+                            return;
+                        }
                     }
                     else
                     {
@@ -49,7 +54,7 @@ namespace VectaraExampleGrpc
         /// <summary>
         /// Fetches an authentication token based on authentication URL, client ID and client secret.
         /// </summary>
-        private static String? GetJwtToken(String authUrl, String clientId, String clientSecret)
+        private static string? GetJwtToken(string authUrl, string clientId, string clientSecret)
         {
             JWTFetcher jWTFetcher = new JWTFetcher
             {
@@ -94,25 +99,25 @@ namespace VectaraExampleGrpc
         /// </summary>
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
-        /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
         /// <param name="jwtToken"> A valid authentication token. </param>
-        /// <returns> ID of the document that was indexed, or empty string in case of failure. </returns>
-        private static String Index(long customerId, long corpusId, String indexingEndpoint, String jwtToken)
+        /// <returns> ID of the document that was indexed. </returns>
+        /// <exception cref="Exception"> If document indexing fails. </exception>
+        private static string Index(long customerId, long corpusId, string jwtToken)
         {
-            GrpcChannel channel = null;
+            GrpcChannel? channel = null;
             try
             {
-                String address = "https://" + indexingEndpoint + ":443";
+                string address = "https://" + ServerEndpoints.indexingEndpoint + ":443";
                 channel = AuthenticatedChannel(address, jwtToken, customerId, corpusId);
 
                 var indexingClient = new IndexService.IndexServiceClient(channel);
                 var request = new IndexDocumentRequest();
-                String docId = Guid.NewGuid().ToString(); // Generating a random document id.
+                string docId = Guid.NewGuid().ToString(); // Generating a random document id.
                 request.CustomerId = customerId;
                 request.CorpusId = corpusId;
                 request.Document = new Document
                 {
-                    DocumentId = docId,  
+                    DocumentId = docId,
                     Title = "Dummy Title",
                     Description = "Dummy description",
                     MetadataJson = JsonSerializer.Serialize(new Dictionary<string, string>
@@ -129,12 +134,18 @@ namespace VectaraExampleGrpc
                 });
 
                 var result = indexingClient.Index(request);
-                Console.WriteLine(result.ToString());
+                if (result.Status.Code == Com.Vectara.StatusCode.Ok) {
+                    Console.WriteLine("Document indexed successfully.");
+                } else if (result.Status.Code == Com.Vectara.StatusCode.AlreadyExists) {
+                    Console.WriteLine("Document was previously indexed: {0}", result.Status.StatusDetail);
+                } else {
+                    throw new Exception(string.Format("Could not index document: {0}", result.Status.StatusDetail));
+                }
                 return docId;
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                Console.Error.WriteLine(ex.Message);
+                throw;
             }
             finally
             {
@@ -143,7 +154,6 @@ namespace VectaraExampleGrpc
                     channel.ShutdownAsync();
                 }
             }
-            return "";
         }
 
         /// <summary>
@@ -151,33 +161,34 @@ namespace VectaraExampleGrpc
         /// </summary>
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
-        /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
         /// <param name="jwtToken"> A valid authentication token. </param>
         /// <param name="docId"> Document Id to be deleted. </param>
-        private static void DeleteDocument(long customerId, 
-                                           long corpusId, 
-                                           String indexingEndpoint, 
-                                           String jwtToken, 
-                                           String docId)
+        /// <exception cref="Exception"> If document deletion fails. </exception>
+        private static void DeleteDocument(long customerId,
+                                           long corpusId,
+                                           string jwtToken,
+                                           string docId)
         {
-            GrpcChannel channel = null;
+            GrpcChannel? channel = null;
             try
             {
-                String address = "https://" + indexingEndpoint + ":443";
+                string address = "https://" + ServerEndpoints.indexingEndpoint + ":443";
                 channel = AuthenticatedChannel(address, jwtToken, customerId, corpusId);
 
                 var indexingClient = new IndexService.IndexServiceClient(channel);
-                var request = new DeleteDocumentRequest();
-                request.CustomerId = customerId;
-                request.CorpusId = corpusId;
-                request.DocumentId = docId;
+                var request = new DeleteDocumentRequest
+                {
+                    CustomerId = customerId,
+                    CorpusId = corpusId,
+                    DocumentId = docId
+                };
 
-                var result = indexingClient.Delete(request);
-                Console.WriteLine(result.ToString());
+                indexingClient.Delete(request);
+                Console.WriteLine(string.Format("Document deletion request submitted for {0} in corpus {1}", docId, corpusId));
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                Console.Error.WriteLine(ex.Message);
+                throw;
             }
             finally
             {
@@ -194,14 +205,14 @@ namespace VectaraExampleGrpc
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusId"> The corpus that needs to be queried. </param>
         /// <param name="query"> The query text. </param>
-        /// <param name="servingEndpoint"> Serving API endpoint to which calls will be directed. </param>
         /// <param name="jwtToken"> A valid authentication token. </param>
-        private static void Query(long customerId, long corpusId, String query, String servingEndpoint, String jwtToken)
+        /// <exception cref="Exception"> If query fails. </exception>
+        private static void Query(long customerId, long corpusId, String query, String jwtToken)
         {
-            GrpcChannel channel = null;
+            GrpcChannel? channel = null;
             try
             {
-                String address = "https://" + servingEndpoint + ":443";
+                string address = "https://" + ServerEndpoints.servingEndpoint + ":443";
                 channel = AuthenticatedChannel(address, jwtToken, customerId, corpusId);
 
                 var servingClient = new QueryService.QueryServiceClient(channel);
@@ -219,11 +230,29 @@ namespace VectaraExampleGrpc
                 batchRequest.Query.Add(queryRequest);
 
                 var result = servingClient.Query(batchRequest);
-                Console.WriteLine(result.ToString());
+                foreach (var status in result.Status)
+                {
+                    if (status.Code != Com.Vectara.StatusCode.Ok)
+                    {
+                        Console.Error.WriteLine(string.Format("Failure status on query: {0}", status.StatusDetail));
+                    }
+                }
+                foreach (var responseSet in result.ResponseSet)
+                {
+                    foreach (var status in responseSet.Status)
+                    {
+                        if (status.Code != Com.Vectara.StatusCode.Ok)
+                        {
+                            Console.Error.WriteLine(string.Format("Failure querying corpus: {0}", status.StatusDetail));
+                        }
+                    }
+                }
+
+                Console.WriteLine(string.Format("Query response: {0}", result.ToString()));
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                Console.Error.WriteLine(ex.Message);
+                throw;
             }
             finally
             {
@@ -239,14 +268,15 @@ namespace VectaraExampleGrpc
         /// </summary>
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusName"> The name of the corpus to be created. </param>
-        /// <param name="adminEndpoint"> Admin API endpoint to which calls will be directed. </param>
         /// <param name="jwtToken"> A valid authentication token. </param>
-        private static void CreateCorpus(long customerId, string corpusName, string adminEndpoint, string jwtToken)
+        /// <returns> ID of the corpus that was created. </returns>
+        /// <exception cref="Exception"> If corpus creation fails. </exception>
+        private static uint CreateCorpus(long customerId, string corpusName, string jwtToken)
         {
-            GrpcChannel channel = null;
+            GrpcChannel? channel = null;
             try
             {
-                String address = "https://" + adminEndpoint + ":443";
+                string address = "https://" + ServerEndpoints.adminEndpoint + ":443";
                 channel = AuthenticatedChannel(address, jwtToken, customerId, null);
 
                 var adminClient = new AdminService.AdminServiceClient(channel);
@@ -260,11 +290,16 @@ namespace VectaraExampleGrpc
                 };
 
                 var result = adminClient.CreateCorpus(request);
-                Console.WriteLine(result.ToString());
+                if (result.Status.Code != Com.Vectara.StatusCode.Ok)
+                {
+                    throw new Exception(string.Format("Could not create corpus: {0}", result.Status.StatusDetail));
+                }
+                Console.WriteLine(string.Format("Corpus created successfully: {0}", result.CorpusId));
+                return result.CorpusId;
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                Console.Error.WriteLine(ex.Message);
+                throw;
             }
             finally
             {

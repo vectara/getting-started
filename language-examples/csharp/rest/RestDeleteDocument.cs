@@ -7,14 +7,12 @@ class RestDeleteDocuement
     /// </summary>
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusId"> The corpus ID to which data will be indexed. </param>
-    /// <param name="indexingEndpoint"> Indexing API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
     /// <param name="docId"> Id of the document that needs to be deleted.
     public static void DeleteDocument(long customerId, 
                                       long corpusId, 
-                                      String indexingEndpoint, 
-                                      String jwtToken, 
-                                      String docId)
+                                      string jwtToken, 
+                                      string docId)
     {
         using (var client = new HttpClient())
         {
@@ -22,14 +20,16 @@ class RestDeleteDocuement
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{indexingEndpoint}/v1/delete-doc"),
+                    RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/delete-doc"),
                     Method = HttpMethod.Post,
                 };
 
-                Dictionary<String, Object> deleteRequest = new();
-                deleteRequest.Add("customerId", customerId);
-                deleteRequest.Add("corpusId", corpusId);
-                deleteRequest.Add("documentId", docId);
+                Dictionary<string, object> deleteRequest = new()
+                {
+                    { "customerId", customerId },
+                    { "corpusId", corpusId },
+                    { "documentId", docId }
+                };
                 string jsonData = JsonSerializer.Serialize(deleteRequest);
 
                 request.Content = new StringContent(jsonData);
@@ -40,14 +40,13 @@ class RestDeleteDocuement
                 request.Headers.Add("Authorization", $"Bearer {jwtToken}");
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 Console.WriteLine(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }

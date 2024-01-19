@@ -14,10 +14,18 @@ namespace VectaraExampleGrpc
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Args>(args)
+            _ = Parser.Default.ParseArguments<Args>(args)
                 .WithParsed<Args>((args) =>
                 {
-                    Query(args.CustomerId, args.CorpusId, "Test Query.", args.ServingEndpoint, args.ApiKey);
+                    try
+                    {
+                        Query(args.CustomerId, args.CorpusId, "Test Query.", args.ApiKey);
+                    } 
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine(ex.Message);
+                        return;
+                    }
                 })
                 .WithNotParsed<Args>((errs) =>
                 {
@@ -55,19 +63,19 @@ namespace VectaraExampleGrpc
         }
 
         /// <summary>
-        /// Queries a Vectara corpus.
+        /// Queries a Vectara corpus using an API Key.
         /// </summary>
         /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
         /// <param name="corpusId"> The corpus that needs to be queried. </param>
         /// <param name="query"> The query text. </param>
-        /// <param name="servingEndpoint"> Serving API endpoint to which calls will be directed. </param>
-        /// <param name="jwtToken"> A valid authentication token. </param>
-        private static void Query(long customerId, long corpusId, String query, String servingEndpoint, String apiKey)
+        /// <param name="apiKey"> A valid API Key. </param>
+        /// <throws> Exception if no results are found. </throws>
+        private static void Query(long customerId, long corpusId, string query, string apiKey)
         {
-            GrpcChannel channel = null;
+            GrpcChannel? channel = null;
             try
             {
-                String address = "https://" + servingEndpoint + ":443";
+                string address = "https://" + ServerEndpoints.servingEndpoint + ":443";
                 channel = AuthenticatedChannel(address, apiKey, customerId, corpusId);
 
                 var servingClient = new QueryService.QueryServiceClient(channel);
@@ -85,11 +93,29 @@ namespace VectaraExampleGrpc
                 batchRequest.Query.Add(queryRequest);
 
                 var result = servingClient.Query(batchRequest);
-                Console.WriteLine(result.ToString());
+                foreach (var status in result.Status)
+                {
+                    if (status.Code != Com.Vectara.StatusCode.Ok)
+                    {
+                        Console.Error.WriteLine(string.Format("Failure status on query: {0}", status.StatusDetail));
+                    }
+                }
+                foreach (var responseSet in result.ResponseSet)
+                {
+                    foreach (var status in responseSet.Status)
+                    {
+                        if (status != null && status.Code != Com.Vectara.StatusCode.Ok)
+                        {
+                            Console.Error.WriteLine(string.Format("Failure querying corpus: {0}", status.StatusDetail));
+                        }
+                    }
+                }
+
+                Console.WriteLine(string.Format("Query response: {0}", result.ToString()));
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                Console.Error.WriteLine(ex.Message);
+                throw;
             }
             finally
             {

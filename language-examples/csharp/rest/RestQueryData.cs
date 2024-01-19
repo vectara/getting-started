@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 class RestQueryData
 {
@@ -8,9 +9,9 @@ class RestQueryData
     /// <param name="customerId"> The unique customer ID in Vectara platform. </param>
     /// <param name="corpusId"> The corpus that needs to be queried. </param>
     /// <param name="query"> The query text. </param>
-    /// <param name="servingEndpoint"> Serving API endpoint to which calls will be directed. </param>
     /// <param name="jwtToken"> A valid authentication token. </param>
-    public static void Query(long customerId, long corpusId, String query, String servingEndpoint, String jwtToken)
+    /// <throws> Exception if no results are found. </throws>
+    public static void Query(long customerId, long corpusId, string query, string jwtToken)
     {
         using (var client = new HttpClient())
         {
@@ -18,18 +19,20 @@ class RestQueryData
             {
                 var request = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://{servingEndpoint}/v1/query"),
+                    RequestUri = new Uri($"https://{ServerEndpoints.commonEndpoint}/v1/query"),
                     Method = HttpMethod.Post,
                 };
-                Dictionary<String, Object> queryData = new();
-                List<Object> queryList = new();
-                List<Object> corpusList = new();
-                corpusList.Add(new Dictionary<String, Object>()
+                Dictionary<string, object> queryData = new();
+                List<object> queryList = new();
+                List<object> corpusList = new()
+                {
+                    new Dictionary<string, object>()
                     {
                         {"customerId", customerId},
                         {"corpusId", corpusId}
-                    });
-                queryList.Add(new Dictionary<String, Object>()
+                    }
+                };
+                queryList.Add(new Dictionary<string, object>()
                     {
                         {"query", query},
                         {"numResults", 10},
@@ -48,14 +51,46 @@ class RestQueryData
                 request.Headers.Add("customer-id", customerId.ToString());
 
                 HttpResponseMessage response = client.Send(request);
-                String result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject resultObj = JObject.Parse(result);
+                JToken? statusArray = resultObj["status"];
+                if (statusArray == null)
+                {
+                    throw new Exception("No results found");
+                }
+                foreach (var status in statusArray)
+                {
+                    JObject statusObj = JObject.Parse(status.ToString());
+                    if (statusObj["code"].ToString() != "OK")
+                    {
+                        Console.Error.WriteLine(string.Format("Failure status on query: {0}", statusObj["statusDetail"]));
+                    }
+                }
+                JToken? responseSetArray = resultObj["responseSet"];
+                if (responseSetArray == null)
+                {
+                    throw new Exception("No results found");
+                }
+                foreach (var responseSet in responseSetArray)
+                {
+                    JObject responseSetObj = JObject.Parse(responseSet.ToString());
+                    JToken? documents = responseSetObj["document"];
 
-                Console.WriteLine(result);
+                    foreach (JToken docSection in responseSetObj["response"])
+                    {
+                        string text = docSection["text"].ToString();
+                        double score = double.Parse(docSection["score"].ToString());
+                        // doc that this section belongs to
+                        int documentIndex = int.Parse(docSection["documentIndex"].ToString()); 
+                        JToken doc = documents.ElementAt(documentIndex);
+                        string docId = doc["id"].ToString();
+                        Console.WriteLine("[score:{0:N2}] [docId:{1}] [text:{2}]", score, docId, text);
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.Error.WriteLine(ex.Message);
-                return;
+                throw;
             }
         }
     }

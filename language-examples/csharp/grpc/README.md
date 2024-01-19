@@ -18,7 +18,7 @@ There are two supported authentication methods in Vectara.
 Please see the details here: [Authentication](../../../README.md).
 
 ### Running the example
-> This example is built with dotnet core sdk 6.0.
+> This example is built with dotnet core sdk 7.0.
 
 Following are the steps that need to be done to run this example:
 
