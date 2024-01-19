@@ -104,7 +104,7 @@ namespace VectaraExampleGrpc
                 {
                     foreach (var status in responseSet.Status)
                     {
-                        if (status.Code != Com.Vectara.StatusCode.Ok)
+                        if (status != null && status.Code != Com.Vectara.StatusCode.Ok)
                         {
                             Console.Error.WriteLine(string.Format("Failure querying corpus: {0}", status.StatusDetail));
                         }

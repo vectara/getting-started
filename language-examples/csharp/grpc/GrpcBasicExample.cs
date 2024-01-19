@@ -137,7 +137,7 @@ namespace VectaraExampleGrpc
                 if (result.Status.Code == Com.Vectara.StatusCode.Ok) {
                     Console.WriteLine("Document indexed successfully.");
                 } else if (result.Status.Code == Com.Vectara.StatusCode.AlreadyExists) {
-                    Console.WriteLine("Document was previously indexed.");
+                    Console.WriteLine("Document was previously indexed: {0}", result.Status.StatusDetail);
                 } else {
                     throw new Exception(string.Format("Could not index document: {0}", result.Status.StatusDetail));
                 }

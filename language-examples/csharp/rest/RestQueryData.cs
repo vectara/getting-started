@@ -53,6 +53,19 @@ class RestQueryData
                 HttpResponseMessage response = client.Send(request);
                 string result = response.Content.ReadAsStringAsync().Result;
                 JObject resultObj = JObject.Parse(result);
+                JToken? statusArray = resultObj["status"];
+                if (statusArray == null)
+                {
+                    throw new Exception("No results found");
+                }
+                foreach (var status in statusArray)
+                {
+                    JObject statusObj = JObject.Parse(status.ToString());
+                    if (statusObj["code"].ToString() != "OK")
+                    {
+                        Console.Error.WriteLine(string.Format("Failure status on query: {0}", statusObj["statusDetail"]));
+                    }
+                }
                 JToken? responseSetArray = resultObj["responseSet"];
                 if (responseSetArray == null)
                 {
