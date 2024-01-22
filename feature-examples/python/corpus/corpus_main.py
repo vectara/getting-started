@@ -7,6 +7,7 @@ import sys
 from corpus import compute_corpus_size
 from corpus import disable_corpus
 from corpus import read_corpus
+from corpus import read_usage_metrics
 from utils import utils
 
 
@@ -46,6 +47,11 @@ def main() -> None:
     if not jwt_token:
         logging.error("Failed to get JWT token.")
         sys.exit(1)
+
+    usage_metrics = read_usage_metrics.read_usage_metrics(args.customer_id,
+                                                          args.corpus_id,
+                                                          jwt_token)
+    logging.info("ReadUsageMetrics response: %s", usage_metrics)
 
     corpus = read_corpus.read_corpus(args.customer_id, args.corpus_id, jwt_token)
     logging.info("ReadCorpus response: %s", corpus)
