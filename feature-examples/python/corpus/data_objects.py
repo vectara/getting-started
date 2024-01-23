@@ -37,3 +37,11 @@ class CorpusInfo:
     size_status: str
     api_keys: list[ApiKey]
     api_keys_status: str
+
+
+@dataclasses.dataclass(frozen=True)
+class QueryUsageData:
+    """Query usage information"""
+    rows_read: int
+    query_count: int
+    start_time: int
