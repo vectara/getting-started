@@ -55,12 +55,9 @@ if ($status->code !== Grpc\STATUS_OK) {
     exit(1);
 }
 
-if ($result->getStatus()->getCode() === 0) {
+if ($status->code === 0) {
     echo 'SUCCESS: Document deleted';
 } else {
-    echo 'ERROR: Code: ' .
-        $result->getStatus()->getCode() .
-        ' Detail: ' .
-        $result->getStatus()->getStatusDetail();
+    echo 'ERROR: Could not delete document, Status Code: '. $status->code;
 }
 ?>

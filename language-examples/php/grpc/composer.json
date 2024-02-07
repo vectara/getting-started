@@ -1,16 +1,16 @@
 {
-    "name": "grpc/grpc-demo",
-    "description": "gRPC example for PHP",
-    "require": {
-      "grpc/grpc": "^v1.30.0",
-      "google/protobuf": "^v3.12.2",
-      "google/common-protos": "^2.0",
-      "league/oauth2-client": "^2.6.1"
-    },
-    "autoload": {
-      "psr-4": {
-        "Com\\": "Com/",
-        "GPBMetadata\\": "GPBMetadata/"
-      }
+  "name": "grpc/grpc-demo",
+  "description": "gRPC example for PHP",
+  "require": {
+    "grpc/grpc": "^1.38",
+    "google/protobuf": "^v3.12.2",
+    "google/common-protos": "^2.0",
+    "league/oauth2-client": "^2.6.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Com\\": "Com/",
+      "GPBMetadata\\": "GPBMetadata/"
     }
   }
+}

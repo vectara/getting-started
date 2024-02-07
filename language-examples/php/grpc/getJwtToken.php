@@ -13,6 +13,8 @@ require __DIR__ . '/vendor/autoload.php';
 
 function get_token($auth_url, $client_id, $client_secret)
 {
+    // remove any path from auth_url and keep only the domain
+    $auth_url = parse_url($auth_url, PHP_URL_SCHEME) . '://' . parse_url($auth_url, PHP_URL_HOST);
     $provider = new \League\OAuth2\Client\Provider\GenericProvider([
         'clientId' => $client_id,
         'clientSecret' => $client_secret,
