@@ -24,15 +24,13 @@ curl https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/main/protoc-g
 curl https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/main/protoc-gen-openapiv2/options/annotations.proto \
     > ${OPENAPIV2_ROOT}/options/annotations.proto
 
+PROTOS=$(cd ../../../protos ; find . -type f -name "*.proto" -printf "%P\n" | sort)
+
+echo -e "\nPROTOS:\n"
+echo -e "${PROTOS}\n"
+echo -e "Compiling protos"
+
 python3 -m grpc_tools.protoc -I=../../../protos/ -I=${EXROOT} --python_out=. --grpc_python_out=. \
-    admin.proto \
-    common.proto \
-    custom_dim.proto \
-    indexing.proto \
-    services.proto \
-    serving.proto \
-    status.proto \
-    protoc-gen-openapiv2/options/annotations.proto \
-    protoc-gen-openapiv2/options/openapiv2.proto
+    ${PROTOS}
 
 echo "Proto compilation completed."
