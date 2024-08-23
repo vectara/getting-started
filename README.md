@@ -1,5 +1,10 @@
 # README #
 
+> :warning: **DEPRECATION NOTE:**  This repository is deprecated and not maintained. Please checkout our newly
+> released [APIv2](https://docs.vectara.com/docs/rest-api/vectara-rest-api-v-2).
+> The API Playground for APIv2 includes code in several programming languages.
+> This repository will soon be cleaned up.
+
 ## Cloning the Repository
 
 This repository links a git submodule that contains the Vectara proto definitions
